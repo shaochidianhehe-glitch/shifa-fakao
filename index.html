@@ -319,6 +319,22 @@ var SUBJECTS=[
   {k:"三国法",zi:"三"},{k:"理论法",zi:"理"}
 ];
 function subjOf(q){return q.s||"综合";}
+/* 首页数据池诊断：一眼看出题库加载状态 */
+function diagHTML(){
+  var mn=(window.SHIFA_MN||[]).length, zt=(window.SHIFA_ZT||[]).length,
+      kp=(window.SHIFA_KP||[]).length, ft=(window.SHIFA_FT||[]).length,
+      sj=(window.SHIFA_SJ||[]).length;
+  var ok = mn>1500 && ft>3000;  /* 正常基线 */
+  if(ok) return '<div style="margin-top:14px;font-size:12px;color:var(--ink2);">'+
+    '✓ 数据自检：题库 '+mn+' · 真题 '+zt+' · 讲义 '+kp+' · 法条 '+ft+' · 主观 '+sj+' —— 全部就绪</div>';
+  return '<div class="mn" style="border-left-color:var(--bad);background:rgba(166,61,47,.06);margin-top:14px;">'+
+    '<b>⚠ 数据自检未通过</b>（题库 '+mn+'/1844 · 真题 '+zt+'/161 · 讲义 '+kp+'/73 · 法条 '+ft+'/3359 · 主观 '+sj+'/12）<br>'+
+    '题库文件没有加载成功。常见原因：<br>'+
+    '1. index.html 和 tiku 文件夹没有放在一起（解压后必须在同一文件夹）；<br>'+
+    '2. 安全软件（360/电脑管家/Defender）拦截或隔离了 tiku 里的 js 文件——请查看拦截记录并信任；<br>'+
+    '3. 解压不完整——请重新解压全部内容。'+
+    '</div>';
+}
 /* 题库未加载提示（预览沙箱会拦截外挂 js；用 Edge 打开即可） */
 function poolWarn(){
   return '<div class="mn" style="border-left-color:var(--bad);background:rgba(166,61,47,.06);margin-bottom:18px;">'
@@ -377,7 +393,8 @@ function renderHome(){
   +'<p style="margin-top:22px;font-size:12.5px;color:var(--ink2);line-height:1.9;">'
   +'※ 真题依公开回忆版整理，仅供个人备考参考；模拟题为依考情原创编写。'
   +'进度保存在本机浏览器中，请勿清除站点数据。<br>'
-  +'<a href="download.html" style="color:var(--indigo);">⬇ 下载到本机离线使用（点此下载 zip）</a></p>';
+  +'<a href="download.html" style="color:var(--indigo);">⬇ 下载到本机离线使用（点此下载 zip）</a></p>'
+  + diagHTML();
   $("exam-date").addEventListener("change",function(){
     S.examDate=this.value||S.examDate; save(); hud();
   });
