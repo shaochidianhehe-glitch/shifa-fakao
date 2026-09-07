@@ -1,0 +1,1483 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>拾法 · 法考修行</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;900&family=Cormorant+Garamond:ital,wght@0,500;1,500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f4efe3; --card:#fdfbf5; --ink:#2f2b26; --ink2:#6f6759;
+    --hair:#d9d1bc; --cinnabar:#a63d2f; --indigo:#33505c; --gold:#a08444;
+    --ok:#3d6b4f; --bad:#a63d2f;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:"Noto Serif SC","Source Han Serif SC","STSong","SimSun",serif;
+    color:var(--ink); background:
+      radial-gradient(1200px 600px at 85% -10%, rgba(160,132,68,.07), transparent 60%),
+      radial-gradient(1000px 700px at -10% 110%, rgba(51,80,92,.06), transparent 60%),
+      var(--paper);
+    min-height:100vh;
+  }
+  .en{font-family:"Cormorant Garamond",Georgia,"Times New Roman",serif;}
+</style>
+</head>
+<style>
+  /* ---------- 头部 ---------- */
+  header{
+    position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:16px;
+    padding:14px 26px;background:rgba(244,239,227,.92);backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--hair);flex-wrap:wrap;
+  }
+  .seal{
+    width:40px;height:40px;flex:none;display:flex;align-items:center;justify-content:center;
+    background:var(--cinnabar);color:#f7efe2;font-size:21px;font-weight:900;border-radius:3px;
+    box-shadow:inset 0 0 0 2px rgba(247,239,226,.35);user-select:none;
+  }
+  .brand b{font-size:19px;letter-spacing:6px;font-weight:900;}
+  .brand i{display:block;font-size:11.5px;color:var(--ink2);letter-spacing:2.5px;font-style:normal;}
+  .hud{margin-left:auto;display:flex;gap:20px;align-items:center;font-size:13.5px;color:var(--ink2);}
+  .hud b{color:var(--ink);font-weight:600;}
+  nav{display:flex;gap:4px;flex-wrap:wrap;}
+  nav button{
+    border:none;background:none;cursor:pointer;font-family:inherit;
+    font-size:15px;letter-spacing:3px;color:var(--ink2);padding:8px 14px;transition:.18s;
+  }
+  nav button:hover{color:var(--ink);}
+  nav button.active{color:var(--cinnabar);border-bottom:2px solid var(--cinnabar);}
+  main{width:min(960px,94vw);margin:30px auto 110px;}
+  .view{display:none;animation:fade .4s ease;}
+  .view.show{display:block;}
+  @keyframes fade{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+  h2.sec{
+    display:flex;align-items:center;gap:12px;font-size:17px;font-weight:600;
+    letter-spacing:4px;color:var(--ink);margin:34px 2px 16px;
+  }
+  h2.sec::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--hair),transparent);}
+  h2.sec small{font-size:12px;letter-spacing:2px;color:var(--ink2);}
+  /* ---------- 纸片 ---------- */
+  .paper{
+    background:var(--card);border:1px solid var(--hair);border-radius:3px;
+    box-shadow:0 1px 3px rgba(90,78,55,.08), 0 8px 24px -18px rgba(90,78,55,.25);
+    padding:30px 32px;
+  }
+  /* ---------- 按钮 ---------- */
+  .btn{
+    font-family:inherit;cursor:pointer;font-size:15px;letter-spacing:4px;font-weight:600;
+    color:var(--paper);background:var(--ink);border:none;border-radius:2px;
+    padding:13px 34px;transition:.15s;box-shadow:0 2px 6px rgba(47,43,38,.3);
+  }
+  .btn:hover{background:#463f36;}
+  .btn:active{transform:translateY(1px);box-shadow:none;}
+  .btn.red{background:var(--cinnabar);} .btn.red:hover{background:#8f3327;}
+  .btn.line{background:transparent;color:var(--indigo);border:1px solid var(--indigo);box-shadow:none;}
+  .btn.line:hover{background:rgba(51,80,92,.06);}
+  .btn:disabled{background:#c9c2ad;color:#f0ebdd;cursor:not-allowed;box-shadow:none;}
+  .mini{
+    border:1px solid var(--hair);background:transparent;color:var(--indigo);cursor:pointer;
+    font-family:inherit;font-size:13px;letter-spacing:2px;padding:5px 13px;border-radius:2px;transition:.15s;
+  }
+  .mini:hover{border-color:var(--indigo);}
+</style>
+<style>
+  /* ---------- 刷题 ---------- */
+  .qmeta{display:flex;gap:14px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--ink2);letter-spacing:1px;margin-bottom:18px;}
+  .qtag{border:1px solid var(--hair);border-radius:999px;padding:3px 12px;color:var(--indigo);}
+  .qtag.subj{color:var(--cinnabar);border-color:#e0c4be;}
+  .qstem{font-size:16.5px;line-height:2;}
+  .opts{margin-top:18px;display:flex;flex-direction:column;gap:10px;}
+  .opt{
+    text-align:left;font-family:inherit;font-size:15.5px;line-height:1.8;cursor:pointer;
+    background:var(--card);border:1px solid var(--hair);border-radius:3px;padding:13px 18px;transition:.15s;
+    color:var(--ink);display:flex;gap:12px;
+  }
+  .opt:hover{border-color:var(--ink2);transform:translateX(4px);}
+  .opt b{flex:none;color:var(--gold);font-weight:600;}
+  .opt.sel{border-color:var(--indigo);background:rgba(51,80,92,.05);}
+  .opt.right{border-color:var(--ok);background:rgba(61,107,79,.07);}
+  .opt.right b{color:var(--ok);}
+  .opt.wrong{border-color:var(--bad);background:rgba(166,61,47,.06);}
+  .opt.wrong b{color:var(--bad);}
+  .opt:disabled{cursor:default;}
+  .opt:disabled:hover{transform:none;}
+  .expl{
+    margin-top:18px;border-left:3px solid var(--gold);background:rgba(160,132,68,.06);
+    padding:14px 18px;font-size:14.5px;line-height:1.95;color:var(--ink);
+  }
+  .expl .verdict{font-weight:900;letter-spacing:3px;}
+  .expl .verdict.ok{color:var(--ok);} .expl .verdict.bad{color:var(--bad);}
+  .expl .src{display:block;margin-top:6px;font-size:13px;color:var(--gold);}
+  /* ---------- 卡册网格 ---------- */
+  .vols{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:16px;}
+  .vol{
+    text-align:left;cursor:pointer;font-family:inherit;position:relative;overflow:hidden;
+    background:var(--card);border:1px solid var(--hair);border-radius:3px;padding:22px 20px;transition:.2s;
+  }
+  .vol:hover{transform:translateY(-3px);box-shadow:0 12px 28px -14px rgba(90,78,55,.4);border-color:#cbc2a8;}
+  .vol .no{font-size:12px;letter-spacing:3px;color:var(--gold);}
+  .vol b{display:block;font-size:17.5px;font-weight:900;letter-spacing:2px;margin:8px 0 4px;}
+  .vol small{color:var(--ink2);letter-spacing:.5px;display:block;line-height:1.6;}
+  .vol .bar{height:3px;background:#eae3cf;margin-top:14px;}
+  .vol .bar i{display:block;height:100%;background:var(--cinnabar);transition:width .5s;}
+  .vol::after{
+    content:attr(data-zi);position:absolute;right:-8px;bottom:-20px;font-size:84px;font-weight:900;
+    color:rgba(166,61,47,.06);pointer-events:none;line-height:1;
+  }
+  /* ---------- 法条卡 ---------- */
+  .law{background:var(--card);border:1px solid var(--hair);border-radius:3px;padding:18px 22px;margin-bottom:12px;}
+  .law h4{font-size:15px;letter-spacing:2px;color:var(--indigo);margin-bottom:8px;}
+  .law p{font-size:14.5px;line-height:1.9;color:var(--ink);}
+  .law .hot{float:right;font-size:12px;color:var(--cinnabar);letter-spacing:1px;}
+  /* ---------- 知识点 ---------- */
+  .kp h3{font-size:19px;font-weight:900;letter-spacing:2px;margin-bottom:4px;}
+  .kp .kp-sub{font-size:12.5px;color:var(--gold);letter-spacing:2px;margin-bottom:18px;}
+  .kp h5{font-size:14px;letter-spacing:3px;color:var(--indigo);margin:20px 0 8px;}
+  .kp li{margin:7px 0 7px 22px;font-size:14.8px;line-height:1.9;}
+  .kp .mn{border-left:3px solid var(--cinnabar);background:rgba(166,61,47,.05);padding:10px 16px;font-size:14px;line-height:1.9;margin-top:14px;}
+  .kp .mn b{color:var(--cinnabar);letter-spacing:2px;}
+  /* ---------- 倒计时 ---------- */
+  .cd{font-size:44px;font-weight:900;color:var(--cinnabar);letter-spacing:2px;line-height:1.1;}
+  .statgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-top:16px;}
+  .stat{background:var(--card);border:1px solid var(--hair);border-radius:3px;padding:14px 16px;text-align:center;}
+  .stat b{display:block;font-size:24px;font-weight:900;color:var(--ink);}
+  .stat span{font-size:12px;color:var(--ink2);letter-spacing:2px;}
+</style>
+</head>
+<style>
+  /* ---------- 筛选 chips ---------- */
+  .chips{display:flex;flex-wrap:wrap;gap:9px;}
+  .chip{
+    border:1px solid var(--hair);background:transparent;cursor:pointer;font-family:inherit;
+    color:var(--ink2);padding:6px 16px;font-size:13.5px;letter-spacing:2px;border-radius:999px;transition:.15s;
+  }
+  .chip:hover{color:var(--ink);border-color:var(--ink2);}
+  .chip.on{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+  /* ---------- 答题主头部 ---------- */
+  .lesson-head{display:flex;align-items:center;gap:18px;margin-bottom:22px;}
+  .quit{border:none;background:none;cursor:pointer;color:var(--ink2);font-family:inherit;font-size:14px;letter-spacing:2px;}
+  .quit:hover{color:var(--cinnabar);}
+  .lbar{flex:1;height:2px;background:#e5ddc6;position:relative;}
+  .lbar i{position:absolute;left:0;top:0;height:100%;background:var(--cinnabar);transition:width .4s;}
+  .dots{display:flex;gap:7px;font-size:15px;color:var(--cinnabar);letter-spacing:2px;}
+  details summary::-webkit-details-marker{color:var(--gold);}
+  /* ---------- 法条词典 ---------- */
+  .law.dic{cursor:pointer;margin-bottom:10px;padding:14px 20px;transition:.15s;}
+  .law.dic>summary{
+    list-style:none;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;cursor:pointer;
+  }
+  .law.dic>summary::-webkit-details-marker{display:none;}
+  .law.dic>summary b{font-size:15px;color:var(--indigo);letter-spacing:1px;font-weight:900;}
+  .law.dic>summary i{font-style:normal;font-size:13px;color:var(--ink);letter-spacing:.5px;}
+  .law.dic>summary em{
+    margin-left:auto;font-style:normal;font-size:11px;color:var(--gold);
+    border:1px solid #d8c894;border-radius:999px;padding:1px 9px;letter-spacing:1px;white-space:nowrap;
+  }
+  .law.dic[open]{
+    border-color:#b9a97c;background:#fffef9;
+    box-shadow:0 10px 24px -16px rgba(90,78,55,.45);
+  }
+  .law.dic[open]>summary i{color:var(--ink2);}
+  .law.dic[open]>summary b::after{content:" ↓";font-size:11px;color:var(--gold);}
+  .law-body{margin-top:12px;padding-top:4px;border-top:1px dashed var(--hair);}
+  .law-sec{margin-top:13px;}
+  .law-sec h6{font-size:11.5px;letter-spacing:3px;color:var(--gold);margin-bottom:5px;font-weight:600;}
+  .law-sec p{font-size:14px;line-height:1.92;color:var(--ink);}
+  .law-sec.ans{background:rgba(51,80,92,.04);border-left:3px solid var(--indigo);padding:10px 14px;border-radius:0 3px 3px 0;}
+  .law-sec.ans h6{color:var(--indigo);}
+  .law-sec.warn{background:rgba(166,61,47,.05);border-left:3px solid var(--cinnabar);padding:10px 14px;border-radius:0 3px 3px 0;}
+  .law-sec.warn h6{color:var(--cinnabar);}
+  .law-sec.warn p{color:#6e3229;}
+</style>
+<body>
+<header>
+  <div class="seal">法</div>
+  <div class="brand"><b>拾法</b><i>JURIS GLEANINGS · 法考修行</i></div>
+  <div class="hud">
+    <span>卷 <b id="hud-xp">0</b></span>
+    <span>正确率 <b id="hud-acc">--</b></span>
+    <span>倒计时 <b id="hud-cd">--</b></span>
+  </div>
+  <nav>
+    <button data-v="home" class="active">总览</button>
+    <button data-v="study">学</button>
+    <button data-v="zhenti">真题</button>
+    <button data-v="moni">模拟</button>
+    <button data-v="essay">主观题</button>
+    <button data-v="wrong">错题集</button>
+    <button data-v="laws">法条</button>
+  </nav>
+</header>
+<main>
+  <section id="v-home" class="view show"></section>
+  <section id="v-study" class="view"></section>
+  <section id="v-zhenti" class="view"></section>
+  <section id="v-moni" class="view"></section>
+  <section id="v-essay" class="view"></section>
+  <section id="v-wrong" class="view"></section>
+  <section id="v-laws" class="view"></section>
+</main>
+<script src="tiku/zs052.js"></script>
+<script src="tiku/zs053.js"></script>
+<script src="tiku/zs054.js"></script>
+<script src="tiku/zs055.js"></script>
+<script src="tiku/zs056.js"></script>
+<script src="tiku/zs057.js"></script>
+<script src="tiku/zs058.js"></script>
+<script src="tiku/zs059.js"></script>
+<script src="tiku/zs060.js"></script>
+<script src="tiku/zs061.js"></script>
+<script src="tiku/al031.js"></script>
+<script src="tiku/al032.js"></script>
+<script src="tiku/al033.js"></script>
+<script src="tiku/zt040.js"></script>
+<script src="tiku/zt041.js"></script>
+<script src="tiku/zt042.js"></script>
+<script src="tiku/zt043.js"></script>
+<script>
+/* ================= 拾法 · 法考修行 =================
+   单文件应用。进度存 localStorage（键前缀 shifa_）。
+   题库/知识点/法条由外挂 拾法*.js 注入 window.SHIFA_*。
+   ================================================= */
+var $=function(id){return document.getElementById(id);};
+var esc=function(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c];});};
+
+/* ---------- 存储 ---------- */
+var LS="shifa_";
+function loadLS(k,d){try{var v=localStorage.getItem(LS+k);return v==null?d:JSON.parse(v);}catch(e){return d;}}
+function save(){try{localStorage.setItem(LS+"state",JSON.stringify(S));}catch(e){}}
+var S=loadLS("state",{
+  examDate:"2027-09-11",        /* 客观题考试日，总览页可改 */
+  done:{},                      /* qid -> {p,a,ok,t,src} */
+  wrong:{},                     /* qid -> true（错题待重做）*/
+  mastered:{},                  /* qid -> true（已掌握）*/
+  papers:{},                    /* pid -> {score,total,t,name} */
+  kpRead:{},                    /* 知识点标题 -> true */
+  sjDone:{},                    /* 主观题 id -> {t,n} */
+  today:"",daily:[],dailyDone:false,
+  total:0,right:0
+});
+
+/* ---------- 数据访问（外挂库兜底空数组） ---------- */
+function KP(){return window.SHIFA_KP||[];}
+function ZT(){
+  var base=window.SHIFA_ZT||[];
+  /* 仿真完整卷（MN池中 y>0 的题并入对应年份） */
+  var extra=(window.SHIFA_MN||[]).filter(function(q){return q.y&&q.y>0;});
+  return extra.length?base.concat(extra):base;
+}
+function MN(){return window.SHIFA_MN||[];}
+function FT(){return window.SHIFA_FT||[];}
+var QIDX=null;
+function buildIdx(){
+  QIDX={};
+  ZT().concat(MN()).forEach(function(q){QIDX[q.id]=q;});
+  return QIDX;
+}
+function findQ(qid){
+  if(!QIDX)buildIdx();
+  return QIDX[qid]||null;
+}
+
+/* ---------- 倒计时 / HUD ---------- */
+function daysLeft(){
+  var d=new Date(S.examDate+"T09:00:00")-new Date();
+  return Math.max(0,Math.ceil(d/86400000));
+}
+function hud(){
+  $("hud-xp").textContent=S.total;
+  $("hud-acc").textContent=S.total?Math.round(S.right/S.total*100)+"%":"--";
+  $("hud-cd").textContent=daysLeft()+"天";
+}
+
+/* ---------- 路由 ---------- */
+var VIEWS={};
+function go(v){
+  ["home","study","zhenti","moni","essay","wrong","laws"].forEach(function(x){
+    $("v-"+x).classList.toggle("show",x===v);
+    var b=document.querySelector('nav button[data-v="'+x+'"]');
+    if(b)b.classList.toggle("active",x===v);
+  });
+  if(VIEWS[v])VIEWS[v]();
+  window.scrollTo(0,0);
+}
+document.querySelectorAll("nav button").forEach(function(b){
+  b.addEventListener("click",function(){go(b.dataset.v);});
+});
+window.addEventListener("keydown",function(e){
+  if(e.target&&(e.target.tagName==="INPUT"||e.target.tagName==="TEXTAREA"))return;
+  var m={"1":"home","2":"study","3":"zhenti","4":"moni","5":"essay","6":"wrong","7":"laws"};
+  if(m[e.key])go(m[e.key]);
+});
+
+/* ---------- 科目定义 ---------- */
+var SUBJECTS=[
+  {k:"刑法",zi:"刑"},{k:"民法",zi:"民"},{k:"刑诉",zi:"诉"},
+  {k:"民诉",zi:"讼"},{k:"行政",zi:"行"},{k:"商经知",zi:"商"},
+  {k:"三国法",zi:"三"},{k:"理论法",zi:"理"}
+];
+function subjOf(q){return q.s||"综合";}
+/* 题库未加载提示（预览沙箱会拦截外挂 js；用 Edge 打开即可） */
+function poolWarn(){
+  return '<div class="mn" style="border-left-color:var(--bad);background:rgba(166,61,47,.06);margin-bottom:18px;">'
+    +'<b>⚠ 题库文件未加载</b><br>本应用的数据文件（拾法真题20xx.js 等）必须与 拾法.html 放在同一文件夹，'
+    +'并且用 <b>Edge 或 Chrome 浏览器</b>直接打开——聊天预览窗格出于安全会拦截本地 js，属正常现象。'
+    +'右键 拾法.html → 打开方式 → Edge 即可。</div>';
+}
+</script>
+<script>
+/* ---------- 渲染：总览 ---------- */
+function renderHome(){
+  var el=$("v-home");
+  var days=daysLeft();
+  var zt=ZT(), mn=MN(), kp=KP();
+  /* 各科进度：以该科题目总作答正确率 */
+  var perSub={};
+  zt.concat(mn).forEach(function(q){
+    var s=subjOf(q);
+    if(!perSub[s])perSub[s]={t:0,r:0};
+  });
+  Object.keys(S.done).forEach(function(qid){
+    var rec=S.done[qid];
+    var q=findQ(qid); if(!q)return;
+    var s=subjOf(q);
+    if(!perSub[s])perSub[s]={t:0,r:0};
+    perSub[s].t++; if(rec.ok)perSub[s].r++;
+  });
+  var cards=SUBJECTS.map(function(sj){
+    var d=perSub[sj.k]||{t:0,r:0};
+    var pct=d.t?Math.round(d.r/d.t*100):0;
+    return '<button class="vol" data-zi="'+sj.zi+'" onclick="drillSubject(\''+sj.k+'\')">'
+      +'<span class="no">'+sj.k+'</span><b>'+sj.k+'</b>'
+      +'<small>'+(d.t?('已答 '+d.t+' 题 · 正确率 '+pct+'%'):'尚未开始')+'</small>'
+      +'<div class="bar"><i style="width:'+pct+'%"></i></div></button>';
+  }).join("");
+  var today=new Date();
+  var daily=today.toDateString();
+  var wrongN=Object.keys(S.wrong).filter(function(k){return S.wrong[k]&&!S.mastered[k];}).length;
+  el.innerHTML=
+   '<h2 class="sec">备考 <small>EXAM COUNTDOWN</small></h2>'
+  +'<div class="paper" style="display:flex;gap:26px;align-items:center;flex-wrap:wrap;">'
+  +'  <div><div class="cd">'+days+'<span style="font-size:18px;letter-spacing:2px;"> 天</span></div>'
+  +'  <div style="color:var(--ink2);font-size:13px;margin-top:6px;">距离客观题考试（'+esc(S.examDate)+'）</div></div>'
+  +'  <div style="flex:1;min-width:230px;font-size:14px;line-height:2;color:var(--ink);">'
+  +'    累计作答 <b>'+S.total+'</b> 题 · 正确率 <b>'+(S.total?Math.round(S.right/S.total*100):0)+'%</b><br>'
+  +'    错题待重做 <b>'+wrongN+'</b> 题 · 知识点已读 <b>'+Object.keys(S.kpRead).length+'/'+kp.length+'</b> 讲 · 主观题已练 <b>'+Object.keys(S.sjDone||{}).length+'/'+((window.SHIFA_SJ||[]).length)+'</b> 题'
+  +'  </div>'
+  +'  <div style="display:flex;flex-direction:column;gap:8px;">'
+  +'    <label style="font-size:12.5px;color:var(--ink2);letter-spacing:2px;">考试日期'
+  +'      <input type="date" id="exam-date" value="'+esc(S.examDate)+'" '
+  +'      style="margin-left:10px;border:1px solid var(--hair);background:var(--card);padding:5px 9px;font-family:inherit;color:var(--ink);"></label>'
+  +'    <button class="mini" id="btn-daily">'+(S.today===daily&&S.dailyDone?'今日一练已完成 ✓':'开始今日一练（10 题混合卷）')+'</button>'
+  +'  </div>'
+  +'</div>'
+  +'<h2 class="sec">部门法 <small>BY SUBJECT · 点击进入该科刷题</small></h2>'
+  +'<div class="vols">'+cards+'</div>'
+  +'<p style="margin-top:22px;font-size:12.5px;color:var(--ink2);line-height:1.9;">'
+  +'※ 真题依公开回忆版整理，仅供个人备考参考；模拟题为依考情原创编写。'
+  +'进度保存在本机浏览器中，请勿清除站点数据。</p>';
+  $("exam-date").addEventListener("change",function(){
+    S.examDate=this.value||S.examDate; save(); hud();
+  });
+  $("btn-daily").addEventListener("click",startDaily);
+}
+/* ---------- 渲染：知识点 ---------- */
+var KP_SUB=null; /* 当前打开的讲 */
+function renderStudy(){
+  var kp=KP();
+  if(!kp.length){
+    $("v-study").innerHTML='<h2 class="sec">知识精讲 <small>LECTURES</small></h2>'+poolWarn();
+    return;
+  }
+  /* 详情页模式 */
+  if(KP_SUB){
+    renderKpDetail();
+    return;
+  }
+  var chips='<div class="chips" style="margin-bottom:20px;"><button class="chip on" data-k="">全部（'+kp.length+'）</button>'
+    +SUBJECTS.filter(function(s){return kp.some(function(x){return x.k===s.k;});})
+      .map(function(s){
+        var n=kp.filter(function(x){return x.k===s.k;}).length;
+        return '<button class="chip" data-k="'+s.k+'">'+s.k+'（'+n+'）</button>';}).join("")
+    +'</div>';
+  var list=kp.map(function(x,i){
+    var hasCase=x.case?1:0;
+    return '<button class="vol" data-sub="'+x.k+'" data-zi="'+esc(x.k.slice(0,1))+'" onclick="openKp('+i+')">'
+      +'<span class="no">'+esc(x.k)+' · 第'+(i+1)+'讲'+(S.kpRead[x.t]?' · 已读 ✓':'')+'</span><b>'+esc(x.t)+'</b>'
+      +'<small>'+esc(x.n)+(hasCase?' · <span style="color:var(--gold);">含经典案例</span>':'')+'</small>'
+      +'</button>';
+  }).join("");
+  $("v-study").innerHTML='<h2 class="sec">知识精讲 <small>'+kp.length+' 讲 · 八大部门法 · 点击进入详情</small></h2>'+chips+'<div id="kp-list" class="vols">'+list+'</div>';
+  $("v-study").querySelectorAll(".chip").forEach(function(c){
+    c.addEventListener("click",function(){
+      $("v-study").querySelectorAll(".chip").forEach(function(x){x.classList.remove("on");});
+      c.classList.add("on");
+      var k=c.dataset.k;
+      document.querySelectorAll("#kp-list .vol").forEach(function(a){
+        a.style.display=(!k||a.dataset.sub===k)?"":"none";
+      });
+    });
+  });
+}
+function openKp(i){
+  var kp=KP();
+  KP_SUB={idx:i,item:kp[i]};
+  S.kpRead[kp[i].t]=true;
+  save();
+  renderKpDetail();
+  window.scrollTo(0,0);
+}
+function renderKpDetail(){
+  var x=KP_SUB.item;
+  var kp=KP();
+  var html=
+   '<div class="lesson-head">'
+  +'  <button class="quit" onclick="closeKp()">← 返回讲义列表</button>'
+  +'  <div class="lbar"><i style="width:'+Math.round((KP_SUB.idx+1)/kp.length*100)+'%"></i></div>'
+  +'  <div class="dots">第 '+(KP_SUB.idx+1)+' / '+kp.length+' 讲</div>'
+  +'</div>'
+  +'<article class="paper kp">'
+  +'<h3>'+esc(x.t)+'</h3>'
+  +'<div class="kp-sub">'+esc(x.k)+' · '+esc(x.n)+'</div>'
+  +'<h5>考 点 精 讲</h5><ul>'+x.pts.map(function(p){return "<li>"+esc(p)+"</li>";}).join("")+'</ul>'
+  +'<h5>易 错 点</h5><div class="mn"><b>⚠ </b>'+esc(x.trap)+'</div>'
+  +'<h5>记 忆 口 诀</h5><div class="mn" style="border-left-color:var(--gold);background:rgba(160,132,68,.05);"><b>记 </b>'+esc(x.mn)+'</div>'
+  +(x.case?
+     '<h5>经 典 案 例</h5>'
+    +'<div class="paper" style="box-shadow:none;background:rgba(51,80,92,.04);padding:16px 20px;margin-bottom:10px;">'
+    +'<div style="font-size:12.5px;letter-spacing:2px;color:var(--indigo);margin-bottom:8px;">【案情】</div>'
+    +'<div style="font-size:14.8px;line-height:1.95;">'+esc(x.case.f)+'</div>'
+    +'</div>'
+    +'<details class="case-ans"><summary style="cursor:pointer;font-size:14px;letter-spacing:2px;color:var(--cinnabar);">先自己想，点此对照分析 →</summary>'
+    +'<div class="expl" style="margin-top:10px;"><div style="white-space:pre-wrap;line-height:1.95;">'+esc(x.case.a)+'</div></div>'
+    +'</details>':'')
+  +'<div style="margin-top:20px;display:flex;gap:12px;flex-wrap:wrap;">'
+  +'  <button class="mini" onclick="drillKp(\''+esc(x.k)+'\')">本科目练题 →</button>'
+  +  (kp[KP_SUB.idx+1]?'<button class="mini" onclick="openKp('+(KP_SUB.idx+1)+')">下一讲 →</button>':'')
+  +'</div></article>';
+  $("v-study").innerHTML=html;
+}
+function closeKp(){
+  KP_SUB=null;
+  renderStudy();
+}
+function goStudy(sub){
+  go("study");
+  if(sub){
+    setTimeout(function(){
+      var chip=document.querySelector('#v-study .chip[data-k="'+sub+'"]');
+      if(chip)chip.click();
+    },50);
+  }
+}
+/* 首页科目卡：直接进入该科刷题（真题+模拟混合） */
+function drillSubject(sub){
+  var pool=MN().concat(ZT()).filter(function(q){return subjOf(q)===sub;});
+  if(!pool.length){alert("该科暂无题目");return;}
+  go("study");
+  EX_ROOM="study";
+  startPaper(shuffle(pool),{name:sub+" · 刷题模式"});
+}
+/* 讲义页：来两题练手 */
+function drillKp(sub){
+  var pool=MN().concat(ZT()).filter(function(q){return subjOf(q)===sub;});
+  if(!pool.length)return;
+  EX_ROOM="study";
+  startPaper(shuffle(pool).slice(0,Math.min(2,pool.length)),{name:sub+" · 练手两题"});
+}
+</script>
+<script>
+/* ---------- 考试引擎 ---------- */
+var EX=null; /* 当前考试状态 */
+function shuffle(arr){
+  var a=arr.slice();
+  for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}
+  return a;
+}
+/* pool: 题目数组；meta:{name,src} */
+function startPaper(pool,meta){
+  if(!pool.length){alert("题库为空");return;}
+  EX={qs:pool,idx:0,ans:{},mode:"practice",name:meta.name,src:meta.src||"",pid:meta.pid||null,
+      t0:Date.now()};
+  renderExam();
+}
+/* 考场模式：全部作答完才出成绩与解析 */
+function renderExam(){
+  var q=EX.qs[EX.idx];
+  var n=EX.qs.length;
+  var letters=["A","B","C","D"];
+  var multi=q.type===2;
+  var picked=EX.ans[q.id]!==undefined?EX.ans[q.id]:null;
+  /* 即时反馈：练习模式下已作答的题显示对错+解析 */
+  var answered=EX.mode==="practice"&&picked!==null;
+  var ok=answered?gradeOne(q,picked):false;
+  var wantStr=(q.type===2?[].concat(q.a):[q.a]).map(function(v){return letters[v];}).join("、");
+  var html=
+  '<div class="lesson-head">'
+  +'  <button class="quit" onclick="quitExam()">← 退出</button>'
+  +'  <div class="lbar"><i style="width:'+Math.round((EX.idx)/n*100)+'%"></i></div>'
+  +'  <div class="dots">第 '+ (EX.idx+1) +" / "+n+' 题</div>'
+  +'</div>'
+  +'<div class="paper">'
+  +'  <div class="qmeta"><span class="qtag subj">'+esc(subjOf(q))+'</span>'
+  +'    <span class="qtag">'+(multi?"多选":"单选")+'</span>'
+  +'    <span style="margin-left:auto;color:var(--gold);letter-spacing:1px;">'+esc(EX.name)+'</span></div>'
+  +'  <div class="qstem">'+esc(q.q).replace(/\n/g,"<br>")+'</div>'
+  +'  <div class="opts">'
+  + q.o.map(function(op,i){
+      var cls="opt";
+      if(answered){
+        var want=[].concat(q.a);
+        var got=[].concat(picked===null?[]:picked);
+        var isWant=want.indexOf(i)>=0, isGot=got.indexOf(i)>=0;
+        if(isWant&&isGot)cls="opt right";
+        else if(isWant)cls="opt right";
+        else if(isGot)cls="opt wrong";
+      }
+      return '<button class="'+cls+'" data-i="'+i+'" onclick="pickOpt('+i+')"><b>'+letters[i]+'．</b><span>'+esc(op)+'</span></button>';
+    }).join("")
+  +'  </div>'
+  +(answered
+    ?'<div class="expl" style="margin-top:14px;">'
+     +'<div style="font-weight:700;color:'+(ok?'#3cb371':'#e05c5c')+';margin-bottom:6px;">'
+     +(ok?'✓ 回答正确':'✗ 回答错误')+'　正确答案：'+wantStr+'</div>'
+     +'<div style="color:var(--muted);line-height:1.7;">'+esc(q.exp||"").replace(/\n/g,"<br>")+'</div>'
+     +(q.desc?'<div style="margin-top:6px;color:var(--gold);font-size:.85em;">考点：'+esc(q.desc)+'</div>':'')
+     +'</div>'
+    :'')
+  +'</div>'
+  +'<div class="exam-nav" style="margin-top:20px;display:flex;gap:12px;">'
+  +'  <button class="btn line" onclick="examPrev()" '+(EX.idx===0?"disabled":"")+'>上一题</button>'
+  +(multi&&!answered
+    ?'  <button class="btn" onclick="confirmMulti()">确认答案</button>'
+    :(EX.idx<n-1
+      ?'  <button class="btn" onclick="examNext()">下一题</button>'
+      :'  <button class="btn red" onclick="submitPaper()">交 卷</button>'))
+  +(multi&&answered&&EX.idx<n-1
+    ?'  <button class="btn" onclick="examNext()">下一题</button>':'')
+  +'</div>';
+  $("v-"+EX_ROOM).innerHTML=html;
+}
+function confirmMulti(){
+  var q=EX.qs[EX.idx];
+  if(EX.ans[q.id]===undefined||!(EX.ans[q.id].length)){alert("请先选择答案");return;}
+  renderExam();
+}
+function pickOpt(i){
+  var q=EX.qs[EX.idx];
+  var cur=EX.ans[q.id];
+  /* 练习模式即时反馈：已作答的题锁定不可再改 */
+  if(EX.mode==="practice"&&cur!==undefined)return;
+  if(q.type===2){
+    var set=cur?[].concat(cur):[];
+    var at=set.indexOf(i);
+    if(at>=0)set.splice(at,1);else set.push(i);
+    set.sort();EX.ans[q.id]=set;
+  }else{
+    EX.ans[q.id]=i;
+    /* 单选答题后立即显示解析（不再自动跳题） */
+  }
+  renderExamNoJump();
+}
+function renderExamNoJump(){renderExam();}
+function examPrev(){if(EX.idx>0){EX.idx--;renderExam();}}
+function examNext(){
+  var q=EX.qs[EX.idx];
+  if(EX.ans[q.id]===undefined){if(!confirm("本题未作答，确认跳过？"))return;}
+  if(EX.idx<EX.qs.length-1){EX.idx++;renderExam();}
+}
+function quitExam(){
+  if(!confirm("退出后本次作答不保存，确定退出？"))return;
+  EX=null;VIEWS[EX_ROOM]&&VIEWS[EX_ROOM]();
+}
+var EX_ROOM="zhenti";
+function gradeOne(q,picked){
+  var right=false;
+  if(q.type===2){
+    var want=[].concat(q.a),got=(picked||[]).slice().sort();
+    right=want.length===got.length&&want.every(function(v,i){return v===got[i];});
+  }else right=picked===q.a;
+  return right;
+}
+function submitPaper(){
+  var un=EX.qs.filter(function(q){return EX.ans[q.id]===undefined;}).length;
+  if(un&&!confirm("还有 "+un+" 题未作答，确定交卷？"))return;
+  var rightN=0;
+  EX.result=EX.qs.map(function(q){
+    var p=EX.ans[q.id];var ok=gradeOne(q,p);
+    if(ok)rightN++;
+    /* 记录统计 */
+    if(S.done[q.id]){S.total++;if(ok)S.right++;}
+    else{S.total++;if(ok)S.right++;}
+    S.done[q.id]={p:p===undefined?null:p,a:[].concat(q.a),ok:ok,t:Date.now(),src:EX.name};
+    if(!ok){S.wrong[q.id]=true;delete S.mastered[q.id];}
+    else if(S.wrong[q.id]&&EX.fromWrong){}
+    return {q:q,p:p===undefined?null:p,ok:ok};
+  });
+  S.papers["p"+Date.now()]={score:rightN,total:EX.qs.length,t:Date.now(),name:EX.name};
+  if(EX.name.indexOf("今日一练")===0){S.dailyDone=true;}
+  save();hud();
+  renderReview(rightN);
+}
+function renderReview(score){
+  var n=EX.qs.length;
+  var pct=Math.round(score/n*100);
+  var verdict=pct>=85?"登科及第 · 稳":pct>=70?"渐入佳境":pct>=60?"尚需砥砺":"重整旗鼓";
+  var letters=["A","B","C","D"];
+  var rows=EX.result.map(function(r,i){
+    var q=r.q,multi=q.type===2;
+    var mine=r.p===null?"未答":[].concat(r.p).map(function(x){return letters[x];}).join("、");
+    var truth=[].concat(q.a).map(function(x){return letters[x];}).join("、");
+    var opts=q.o.map(function(op,j){
+      var mark="";
+      if([].concat(q.a).indexOf(j)>=0)mark=' <span style="color:var(--ok);font-size:12px;">✓ 正确</span>';
+      if(multi?(r.p||[]).indexOf(j)>=0:r.p===j)
+        mark+=(mark?" / ":' ')+'<span style="color:'+(r.ok?"var(--ok)":"var(--bad)")+';font-size:12px;">你的选择</span>';
+      return '<li style="margin:5px 0;color:'+
+        ([].concat(q.a).indexOf(j)>=0?"var(--ink)":((multi?(r.p||[]).indexOf(j)>=0:r.p===j)?"var(--bad)":"var(--ink2)"))+
+        ';">'+letters[j]+'．'+esc(op)+mark+'</li>';
+    }).join("");
+    return '<div class="paper" style="padding:22px 26px;margin-bottom:14px;'
+      +(r.ok?"border-left:3px solid var(--ok);":"border-left:3px solid var(--bad);")+'">'
+      +'<div class="qmeta"><b style="color:'+(r.ok?"var(--ok)":"var(--bad)")+'">Q'+(i+1)+'</b>'
+      +'<span class="qtag subj">'+esc(subjOf(q))+'</span><span class="qtag">'+(multi?"多选":"单选")+'</span>'
+      +'<span style="margin-left:auto;font-size:12.5px;">你的答案 <b style="color:'+(r.ok?"var(--ok)":"var(--bad)")+'">'+mine+'</b> · 正确答案 <b style="color:var(--ok)">'+truth+'</b></span></div>'
+      +'<div class="qstem" style="font-size:15px;">'+esc(q.q).replace(/\n/g,"<br>")+'</div>'
+      +'<ul style="list-style:none;margin-top:10px;padding:0;">'+opts+'</ul>'
+      +'<div class="expl"><span class="verdict '+(r.ok?"ok":"bad")+'">'+(r.ok?"✓ 答 对":"✗ 答 错")+'</span><br>'+esc(q.exp)
+      +'<span class="src">出处：'+esc(q.src||EX.name)+'</span></div>'
+      +'</div>';
+  }).join("");
+  $("v-"+EX_ROOM).innerHTML=
+   '<div class="paper" style="text-align:center;margin-bottom:24px;">'
+  +'  <div style="font-size:13px;letter-spacing:3px;color:var(--ink2);">'+esc(EX.name)+' · 成绩</div>'
+  +'  <div class="cd" style="margin:10px 0;">'+score+'<span style="font-size:18px;"> / '+n+'</span></div>'
+  +'  <div style="font-size:15px;letter-spacing:4px;color:var(--gold);">'+verdict+'</div>'
+  +'  <div style="margin-top:16px;display:flex;gap:12px;justify-content:center;">'
+  +'    <button class="mini" onclick="redoWrongInPaper()">只重做错题</button>'
+  +'    <button class="mini" onclick="backToList()">返回列表</button>'
+  +'  </div>'
+  +'</div>'+rows;
+  window.scrollTo(0,0);
+}
+function redoWrongInPaper(){
+  var wrongs=EX.result.filter(function(r){return !r.ok;}).map(function(r){return r.q;});
+  if(!wrongs.length)return;
+  startPaper(shuffle(wrongs),{name:"错题重做 · "+EX.name});
+}
+function backToList(){VIEWS[EX_ROOM]();}
+</script>
+<script>
+/* ---------- 真题页 ---------- */
+VIEWS.zhenti=function(){
+  var years={};
+  ZT().forEach(function(q){
+    if(!years[q.y])years[q.y]=[];
+    years[q.y].push(q);
+  });
+  var ks=Object.keys(years).sort().reverse();
+  var cards=ks.map(function(y){
+    var qs=years[y];
+    var doneN=qs.filter(function(q){return S.done[q.id];}).length;
+    var pct=qs.length?Math.round(doneN/qs.length*100):0;
+    return '<button class="vol" data-zi="'+String(y).slice(2)+'" onclick="openYear('+y+')">'
+      +'<span class="no">国家统一法律职业资格考试</span><b>'+y+' 年真题</b>'
+      +'<small>'+(qs.length>=95?'完整全真卷':qs.length+' 题精选（完整卷150题 · 本卷为分层抽样集）')+' · 已做 '+doneN+' 题</small>'
+      +'  <div class="bar"><i style="width:'+pct+'%"></i></div></button>';
+  }).join("");
+  $("v-zhenti").innerHTML='<h2 class="sec">历年真题 <small>2018–2025 · 按年份归档</small></h2>'
+    +'<div class="chips" style="margin-bottom:18px;">'
+    +'<button class="chip on" data-m="year">按年份</button>'
+    +'<button class="chip" data-m="subject">按科目</button></div>'
+    +'<div id="zt-body">'+(cards||poolWarn())+'</div>';
+  $("v-zhenti").querySelectorAll(".chip").forEach(function(c){
+    c.addEventListener("click",function(){
+      document.querySelectorAll("#v-zhenti .chip").forEach(function(x){x.classList.remove("on");});
+      c.classList.add("on");
+      renderZtBody(c.dataset.m);
+    });
+  });
+}
+function renderZtBody(mode){
+  var html="";
+  if(mode!=="subject"){
+    var years={};
+    ZT().forEach(function(q){(years[q.y]||(years[q.y]=[])).push(q);});
+    html=Object.keys(years).sort().reverse().map(function(y){
+      var qs=years[y];
+      var doneN=qs.filter(function(q){return S.done[q.id];}).length;
+      var pct=qs.length?Math.round(doneN/qs.length*100):0;
+      return '<button class="vol" data-zi="'+y.slice(2)+'" onclick="openYear('+y+')">'
+        +'<span class="no">国家统一法律职业资格考试</span><b>'+y+' 年真题</b>'
+        +'<small>'+(qs.length>=95?'完整全真卷':qs.length+' 题精选（完整卷150题 · 本卷为分层抽样集）')+' · 已做 '+doneN+' 题</small>'
+        +'<div class="bar"><i style="width:'+pct+'%"></i></div></button>';
+    }).join("");
+  }else{
+    var bySub={};
+    ZT().forEach(function(q){(bySub[subjOf(q)]||(bySub[subjOf(q)]=[])).push(q);});
+    html=Object.keys(bySub).map(function(k){
+      var qs=bySub[k];
+      var doneN=qs.filter(function(q){return S.done[q.id];}).length;
+      return '<button class="vol" data-zi="'+k.slice(0,1)+'" onclick="openYearSubject(\''+k+'\')">'
+        +'<span class="no">'+qs.length+' 题收录</span><b>'+k+'</b>'
+        +'<small>历年真题 · 已做 '+doneN+'</small>'
+        +'<div class="bar"><i style="width:'+(qs.length?Math.round(doneN/qs.length*100):0)+'%"></i></div></button>';
+    }).join("");
+  }
+  $("zt-body").innerHTML=html||poolWarn();
+}
+function openYearSubject(sub){
+  var qs=ZT().filter(function(q){return subjOf(q)===sub;});
+  showPaperEntry(qs,{name:"真题 · "+sub+"专项",src:"zt",pid:"zts-"+sub});
+}
+function openYear(y){
+  var qs=ZT().filter(function(q){return q.y===y;});
+  showPaperEntry(qs,{name:y+" 年真题精选",src:"zt",pid:"zt"+y,y:y});
+}
+/* ============ 真题考场模式：完整卷体验 · 限时 · 锁卷 · 到点自动交卷 ============ */
+function startZtMock(y){
+  var qs=ZT().filter(function(q){return q.y===y;});
+  if(!qs.length)return;
+  /* 限时规则：每题1.8分钟（100题180分钟的真实考场强度），整场一次性倒计时 */
+  var mins=Math.max(15,Math.round(qs.length*1.8));
+  var multiN=qs.filter(function(q){return q.type===2;}).length;
+  if(!confirm("🏛 真题考场规则（"+y+" 年卷）\n\n· 共 "+qs.length+" 题，限时 "+mins+" 分钟\n· 考场模式锁定试卷：交卷前不显示任何答案与解析\n· 时间结束自动交卷\n· 成绩按客观题 300 分制折算（及格线 180 分）\n\n确定进入考场？"))return;
+  EX_ROOM="zhenti";
+  EX={qs:qs,idx:0,ans:{},mode:"mock",name:y+" 年真题 · 全真考场",
+      t0:Date.now(),deadline:Date.now()+mins*60000,
+      marked:{},blueprint:true,ztYear:y};
+  renderMockExam();
+  MOCK_TIMER=setInterval(mockTick,1000);
+  mockTick();
+}
+function showPaperEntry(qs,meta){
+  var n=qs.length;
+  $("v-zhenti").innerHTML=
+   '<div class="paper">'
+  +'  <button class="quit" onclick="go(\'zhenti\')">← 返回</button>'
+  +'  <h3 style="font-size:21px;font-weight:900;letter-spacing:3px;margin:14px 0 4px;">'+esc(meta.name)+'</h3>'
+  +'  <div style="font-size:13.5px;color:var(--ink2);margin-bottom:16px;">共 '+n+' 题 · 单选 '+
+     qs.filter(function(q){return q.type!==2;}).length+' / 多选 '+
+     qs.filter(function(q){return q.type===2;}).length+'</div>'
+  +'  <div style="display:flex;gap:12px;flex-wrap:wrap;">'
+  +'    <button class="btn red" onclick="startPaperRoom(\''+(meta.pid||meta.src)+'\',\'zhenti\')">开始练习</button>'
+  +'    <button class="btn" style="background:var(--gold);color:#fff;" onclick="startZtMock('+meta.y+')">🏛 考场模式（限时锁卷）</button>'
+  +'    <button class="mini" onclick="startShuffle(\''+meta.src+'\','+n+',\''+esc(meta.name)+'\')">随机抽题</button>'
+  +'  </div>'
+  +'</div>'
+  +'<h2 class="sec">逐题列表 <small>点击单题即练</small></h2>'
+  +'<div class="paper" style="padding:10px 26px;">'
+  + qs.map(function(q,i){
+      var st=S.done[q.id];
+      var tag=!st?"":(S.done[q.id].ok?'<span style="color:var(--ok)">✓</span>':'<span style="color:var(--bad)">✗</span>');
+      return '<div class="qrow" onclick="practiceOne(\''+q.id+'\')" style="display:flex;gap:12px;padding:13px 4px;'
+       +'border-bottom:1px solid var(--hair);cursor:pointer;font-size:14.5px;line-height:1.8;">'
+       +'<b style="flex:none;color:var(--gold);">'+(i+1)+'</b>'
+       +'<span style="flex:1;">'+esc(q.q.slice(0,46))+(q.q.length>46?"…":"")+'</span>'
+       +'<span style="flex:none;color:var(--ink2);font-size:12.5px;letter-spacing:1px;">'+esc(subjOf(q))+' '+tag+'</span></div>';
+    }).join("")
+  +'</div>';
+  EX_PEND=qs;EX_META=meta;
+}
+var EX_PEND=null,EX_META=null;
+function startPaperRoom(pid,room){
+  var qs=EX_PEND||[];
+  EX_ROOM=room||EX_ROOM;
+  startPaper(qs,EX_META||{name:"练习"});
+}
+function startShuffle(src,n,name){
+  var pool=src==="zt"?ZT():MN();
+  EX_ROOM="zhenti";
+  startPaper(shuffle(pool).slice(0,Math.min(n,pool.length)),{name:name+" · 随机 "+Math.min(n,pool.length)+" 题"});
+}
+function practiceOne(qid){
+  var q=findQ(qid);
+  EX_ROOM="zhenti";
+  startPaper([q],{name:"单题练习 · "+subjOf(q)});
+}
+/* ---------- 模拟页 ---------- */
+VIEWS.moni=function(){
+  var mn=MN();
+  if(!mn.length){
+    $("v-moni").innerHTML='<h2 class="sec">模拟考试 <small>MOCK EXAMS</small></h2>'+poolWarn();
+    return;
+  }
+  var bySub={};
+  mn.forEach(function(q){(bySub[subjOf(q)]||(bySub[subjOf(q)]=[])).push(q);});
+  var hist=Object.keys(S.papers).map(function(k){return S.papers[k];})
+    .sort(function(a,b){return b.t-a.t;}).slice(0,5);
+  var histHtml=hist.map(function(p){
+    var pct=Math.round(p.score/p.total*100);
+    var d=new Date(p.t);
+    return '<div style="display:flex;gap:14px;padding:9px 0;border-bottom:1px solid var(--hair);font-size:14px;">'
+      +'<span style="flex:1;">'+esc(p.name)+'</span>'
+      +'<span>'+(d.getMonth()+1)+'/'+d.getDate()+'</span>'
+      +'<b style="color:'+(pct>=70?"var(--ok)":"var(--bad)")+';">'+p.score+'/'+p.total+'</b></div>';
+  }).join("");
+  $("v-moni").innerHTML=
+   '<h2 class="sec">模拟考试 <small>MOCK EXAMS · 题池 '+mn.length+' 题</small></h2>'
+  +'<div class="vols">'
+  +'  <button class="vol" data-zi="日" onclick="dailyMock()"><span class="no">每日更新</span><b>每日新卷</b><small>按客观题蓝图随机组卷 15 题</small></button>'
+  +'  <button class="vol" data-zi="考" onclick="startRealMock()"><span class="no">全真模考</span><b>客观题全真卷 · 100 题</b><small>组卷蓝图 50单选+50多选 · 限时 180 分钟 · 折算 300 分制（180 分及格）</small></button>'
+  +'  <button class="vol" data-zi="智" onclick="startSmartPaper()"><span class="no">完整卷体验</span><b>智能组卷 · 真实八科权重 100 题</b><small>按法考蓝图配比（刑法29%刑诉26%民法行政等）从全题池合成完整场，每次组合不同 · 限时180分钟考场规则</small></button>'
+  +'  <button class="vol" data-zi="全" onclick="mockByCount(60)"><span class="no">全真强度</span><b>大卷 50 题</b><small>跨科目混合，一次练透</small></button>'
+  +'  <button class="vol" data-zi="专" onclick="showMockSubjects()"><span class="no">专项突破</span><b>按科刷模拟</b><small>单科专项训练</small></button>'
+  +'</div>'
+  +(hist.length?('<h2 class="sec">最近成绩 <small>RECENT SCORES</small></h2><div class="paper" style="padding:14px 26px;">'+histHtml+'</div>'):'');
+};
+function dailyMock(){
+  var pool=shuffle(MN()).slice(0,15);
+  EX_ROOM="moni";
+  startPaper(pool,{name:"每日新卷 · "+new Date().toLocaleDateString("zh-CN")});
+}
+/* ============ 智能组卷：按真实法考八科权重从全池合成100题完整卷 ============ */
+var SMART_WEIGHTS={"刑法":29,"刑诉":26,"民法":26,"行政":13,"理论法":12,"三国法":10,"商经知":9};
+function startSmartPaper(){
+  var mn=MN();
+  if(mn.length<100){alert("题池不足100题，当前："+mn.length);return;}
+  var picked=[],used={};
+  Object.keys(SMART_WEIGHTS).forEach(function(sub){
+    var want=SMART_WEIGHTS[sub];
+    var pool=shuffle(mn.filter(function(q){return subjOf(q)===sub&&!used[q.id];}));
+    var got=pool.slice(0,want);
+    got.forEach(function(q){used[q.id]=1;});
+    picked=picked.concat(got);
+  });
+  /* 不足百题时用剩余题补齐 */
+  if(picked.length<100){
+    var rest=shuffle(mn.filter(function(q){return !used[q.id];}));
+    while(picked.length<100&&rest.length){var q=rest.pop();if(!used[q.id]){used[q.id]=1;picked.push(q);}}
+  }
+  /* 超百（权重区间）裁剪 */
+  picked=shuffle(picked).slice(0,100);
+  if(!confirm("🏛 完整卷智能组卷\n\n· "+picked.length+" 题，按真实八科权重配比\n· 限时 180 分钟，到点自动交卷\n· 300 分制折算（180 及格）\n· 每次组卷组合不同，可反复全真演练\n\n确定进入考场？"))return;
+  EX_ROOM="moni";
+  EX={qs:picked,idx:0,ans:{},mode:"mock",name:"完整卷 · 智能八科权重",
+      t0:Date.now(),deadline:Date.now()+MOCK_BLUEPRINT.minutes*60000,
+      marked:{},blueprint:true};
+  renderMockExam();
+  MOCK_TIMER=setInterval(mockTick,1000);
+  mockTick();
+}
+function mockByCount(n){
+  var pool=shuffle(MN()).slice(0,n);
+  EX_ROOM="moni";
+  startPaper(pool,{name:"模拟大卷 · "+pool.length+" 题"});
+}
+/* ============ 全真模考：客观题100题蓝图卷 · 180分钟 · 300分制 ============ */
+var MOCK_BLUEPRINT={single:50,multi:50,minutes:180,passLine:180,total:300};
+var MOCK_TIMER=null;
+function pickBlueprint(pool){
+  var singles=pool.filter(function(q){return q.type!==2;});
+  var multis=pool.filter(function(q){return q.type===2;});
+  var s=shuffle(singles).slice(0,MOCK_BLUEPRINT.single);
+  var m=shuffle(multis).slice(0,MOCK_BLUEPRINT.multi);
+  /* 多选不足时用单选补足到100 */
+  if(m.length<MOCK_BLUEPRINT.multi){
+    var extra=shuffle(singles.filter(function(q){return s.indexOf(q)<0;})).slice(0,MOCK_BLUEPRINT.multi-m.length);
+    m=m.concat(extra);
+  }
+  var qs=s.concat(m);
+  /* 按科目排序模拟真实试卷的科目分区感（刑法→民法→刑诉…按MN池自然顺序权重） */
+  return shuffle(qs);
+}
+function startRealMock(){
+  var pool=MN();
+  var needSingle=true,multiN=pool.filter(function(q){return q.type===2;}).length;
+  if(pool.length<60){alert("题池不足60题，先多刷点题再来全真模考！当前："+pool.length);return;}
+  if(!confirm("全真模考规则：\n· 100 题客观卷（单选+多选混合）\n· 限时 "+MOCK_BLUEPRINT.minutes+" 分钟，到时自动交卷\n· 全部作答完才出成绩与解析\n\n确定开始？"))return;
+  var qs=pickBlueprint(pool);
+  EX_ROOM="moni";
+  EX={qs:qs,idx:0,ans:{},mode:"mock",name:"客观题全真模考 · 100题",
+      t0:Date.now(),deadline:Date.now()+MOCK_BLUEPRINT.minutes*60000,
+      marked:{},blueprint:true};
+  renderMockExam();
+  MOCK_TIMER=setInterval(mockTick,1000);
+  mockTick();
+}
+function mockTick(){
+  if(!EX||EX.mode!=="mock"){clearInterval(MOCK_TIMER);MOCK_TIMER=null;return;}
+  var left=EX.deadline-Date.now();
+  if(left<=0){clearInterval(MOCK_TIMER);MOCK_TIMER=null;
+    alert("考试时间到，系统自动交卷！");
+    submitMock();return;}
+  var el=document.getElementById("mock-clock");
+  if(el){
+    var mm=Math.floor(left/60000),ss=Math.floor(left%60000/1000);
+    el.textContent=(mm<10?"0":"")+mm+":"+(ss<10?"0":"")+ss;
+    el.style.color=left<10*60000?"var(--bad)":"var(--gold)";
+  }
+}
+function submitMock(){
+  clearInterval(MOCK_TIMER);MOCK_TIMER=null;
+  var un=EX.qs.filter(function(q){return EX.ans[q.id]===undefined;}).length;
+  if(un&&!EX._auto){if(!confirm("还有 "+un+" 题未作答，确定交卷？（多选少选错选均不得分）"))return;}
+  var rightN=0,singleRight=0,singleTot=0,multiRight=0,multiTot=0;
+  EX.result=EX.qs.map(function(q){
+    var p=EX.ans[q.id];var ok=gradeOne(q,p);
+    if(ok)rightN++;
+    if(q.type===2){multiTot++;if(ok)multiRight++;}
+    else{singleTot++;if(ok)singleRight++;}
+    S.total++;if(ok)S.right++;
+    S.done[q.id]={p:p===undefined?null:p,a:[].concat(q.a),ok:ok,t:Date.now(),src:EX.name};
+    if(!ok)S.wrong[q.id]=true;else delete S.mastered[q.id];
+    return {q:q,p:p===undefined?null:p,ok:ok};
+  });
+  EX.score=rightN;
+  EX.mockStats={single:singleRight+"/"+singleTot,multi:multiRight+"/"+multiTot,
+    usedMin:Math.round((Date.now()-EX.t0)/60000)};
+  S.papers["p"+Date.now()]={score:rightN,total:EX.qs.length,t:Date.now(),name:EX.name};
+  save();hud();
+  renderMockReview(rightN);
+}
+function quitMockConfirm(){
+  if(confirm("退出后本次模考作答全部作废（不计成绩不存错题），确定离开考场？")){
+    clearInterval(MOCK_TIMER);MOCK_TIMER=null;EX=null;VIEWS.moni();
+  }
+}
+function toggleMark(){ /* 标记疑难题 */
+  var q=EX.qs[EX.idx];
+  EX.marked[q.id]=!EX.marked[q.id];
+  renderMockExam();
+}
+function jumpTo(i){EX.idx=i;renderMockExam();}
+function renderAnswerCard(){
+  var n=EX.qs.length,cells="";
+  for(var i=0;i<n;i++){
+    var done=EX.ans[EX.qs[i].id]!==undefined;
+    var marked=EX.marked[EX.qs[i].id];
+    cells+='<button onclick="jumpTo('+i+')" style="width:30px;height:30px;margin:2px;border-radius:6px;font-size:12px;cursor:pointer;'
+      +'border:1px solid '+(marked?"var(--bad)":"var(--hair)")+';'
+      +(i===EX.idx?"outline:2px solid var(--gold);":"")
+      +'background:'+(done?"var(--ok)":"transparent")+';color:'+(done?"#fff":"inherit")+';">'+(i+1)+'</button>';
+  }
+  return '<details style="margin-top:14px;"><summary style="cursor:pointer;color:var(--ink2);font-size:13px;">答题卡（点击展开跳题）</summary>'
+    +'<div style="flex-wrap:wrap;display:flex;margin-top:8px;">'+cells+'</div></details>';
+}
+function renderMockExam(){
+  var q=EX.qs[EX.idx];
+  var n=EX.qs.length;
+  var letters=["A","B","C","D"];
+  var multi=q.type===2;
+  var picked=EX.ans[q.id]!==undefined?EX.ans[q.id]:null;
+  var answeredN=EX.qs.filter(function(x){return EX.ans[x.id]!==undefined;}).length;
+  var html=
+  '<div class="lesson-head">'
+  +'  <button class="quit" onclick="quitMockConfirm()">← 离开考场</button>'
+  +'  <div class="lbar"><i style="width:'+Math.round(EX.idx/n*100)+'%"></i></div>'
+  +'  <div class="dots">第 '+ (EX.idx+1) +" / "+n+' 题 · 已答 '+answeredN+'</div>'
+  +'</div>'
+  +'<div class="paper">'
+  +'  <div class="qmeta"><span class="qtag subj">'+esc(subjOf(q))+'</span>'
+  +'    <span class="qtag">'+(multi?"多选":"单选")+'</span>'
+  +'    <span id="mock-clock" style="margin-left:auto;font-weight:700;letter-spacing:1px;">--:--</span></div>'
+  +'  <div class="qstem">'+esc(q.q).replace(/\n/g,"<br>")+'</div>'
+  +'  <div class="opts">'
+  + q.o.map(function(op,i){
+      return '<button class="opt" data-i="'+i+'" onclick="pickOpt('+i+')"><b>'+letters[i]+'．</b><span>'+esc(op)+'</span></button>';
+    }).join("")
+  +'  </div>'
+  +'  <div style="margin-top:16px;display:flex;gap:10px;align-items:center;">'
+  +'    <button class="mini" onclick="toggleMark()">'+(EX.marked[q.id]?"★ 已标记疑难":"☆ 标记疑难")+'</button>'
+  +'    <button class="mini red" style="color:var(--bad);" onclick="submitMock()">提前交卷</button>'
+  +'</div>'
+  +renderAnswerCard()
+  +'</div>'
+  +'<div class="exam-nav" style="margin-top:20px;display:flex;gap:12px;">'
+  +'  <button class="btn line" onclick="examPrev()" '+(EX.idx===0?"disabled":"")+'>上一题</button>'
+  +(EX.idx<n-1
+    ?'  <button class="btn" onclick="examNext()">下一题</button>'
+    :'  <button class="btn red" onclick="submitMock()">交 卷</button>')
+  +'</div>';
+  $("v-"+EX_ROOM).innerHTML=html;
+  if(picked!==null){
+    var sel=[].concat(picked);
+    document.querySelectorAll("#v-"+EX_ROOM+" .opt").forEach(function(b){
+      if(sel.indexOf(+b.dataset.i)>=0)b.classList.add("sel");
+    });
+  }
+}
+function renderMockReview(score){
+  var n=EX.qs.length;
+  var scaled=Math.round(score/n*MOCK_BLUEPRINT.total);
+  var pass=scaled>=MOCK_BLUEPRINT.passLine;
+  var st=EX.mockStats||{};
+  var verdictTxt=pass?"金榜题名 · 过线":scaled>=150?"接近分数线 · 差一口气":"尚需砥砺";
+  var letters=["A","B","C","D"];
+  var rows=EX.result.map(function(r,i){
+    var q=r.q,multi=q.type===2;
+    var mine=r.p===null?"未答":[].concat(r.p).map(function(x){return letters[x];}).join("、");
+    var truth=[].concat(q.a).map(function(x){return letters[x];}).join("、");
+    var opts=q.o.map(function(op,j){
+      var mark="";
+      if([].concat(q.a).indexOf(j)>=0)mark=' <span style="color:var(--ok);font-size:12px;">✓ 正确</span>';
+      if(multi?(r.p||[]).indexOf(j)>=0:r.p===j)
+        mark+=(mark?" / ":' ')+'<span style="color:'+(r.ok?"var(--ok)":"var(--bad)")+';font-size:12px;">你的选择</span>';
+      return '<li style="padding:5px 0;font-size:14px;">'+letters[j]+'．'+esc(op)+mark+'</li>';
+    }).join("");
+    return '<div class="paper" style="padding:20px 24px;margin-bottom:13px;border-left:3px solid '+(r.ok?"var(--ok)":"var(--bad)")+';">'
+      +'<div class="qmeta"><b style="color:'+(r.ok?"var(--ok)":"var(--bad)")+'">Q'+(i+1)+'</b>'
+      +'<span class="qtag subj">'+esc(subjOf(q))+'</span><span class="qtag">'+(multi?"多选":"单选")+'</span>'
+      +'<span style="margin-left:auto;font-size:12.5px;">你的答案 <b style="color:'+(r.ok?"var(--ok)":"var(--bad)")+'">'+mine+'</b> · 正确答案 <b style="color:var(--ok)">'+truth+'</b></span></div>'
+      +'<div class="qstem" style="font-size:15px;">'+esc(q.q).replace(/\n/g,"<br>")+'</div>'
+      +'<ul style="list-style:none;margin-top:10px;padding:0;">'+opts+'</ul>'
+      +'<div class="expl"><span class="verdict '+(r.ok?"ok":"bad")+'">'+(r.ok?"✓ 答 对":"✗ 答 错")+'</span><br>'+esc(q.exp)
+      +'<span class="src">出处：'+esc(q.src||EX.name)+'</span></div>'
+      +'</div>';
+  }).join("");
+  $("v-"+EX_ROOM).innerHTML=
+   '<div class="paper" style="text-align:center;margin-bottom:24px;">'
+  +'  <div style="font-size:13px;letter-spacing:3px;color:var(--ink2);">国家统一法律职业资格考试 · 客观题模拟</div>'
+  +'  <div class="cd" style="margin:10px 0;color:'+(pass?"var(--ok)":"var(--bad)")+';">'+scaled
+  +'<span style="font-size:18px;"> / '+MOCK_BLUEPRINT.total+' 分</span></div>'
+  +'  <div style="font-size:15px;letter-spacing:4px;color:var(--gold);">'+verdictTxt+'（及格线 '+MOCK_BLUEPRINT.passLine+' 分）</div>'
+  +'  <div style="margin-top:12px;font-size:13.5px;color:var(--ink2);line-height:2;">'
+  +'    原始正确 <b>'+score+'/'+n+'</b> · 单选 '+esc(st.single||"-")+' · 多选 '+esc(st.multi||"-")
+  +' · 用时约 '+esc(String(st.usedMin||"-"))+' 分钟'
+  +'  </div>'
+  +'  <div style="margin-top:16px;display:flex;gap:12px;justify-content:center;">'
+  +'    <button class="mini" onclick="redoWrongInPaper()">只重做错题</button>'
+  +'    <button class="mini" onclick="EX=null;VIEWS.moni()">返回模拟页</button>'
+  +'  </div>'
+  +'</div>'+rows;
+  window.scrollTo(0,0);
+}
+function showMockSubjects(){
+  var bySub={};
+  MN().forEach(function(q){(bySub[subjOf(q)]||(bySub[subjOf(q)]=[])).push(q);});
+  var cards=Object.keys(bySub).map(function(k){
+    return '<button class="vol" data-zi="'+k.slice(0,1)+'" onclick="startSubjectMock(\''+k+'\')">'
+      +'<span class="no">'+bySub[k].length+' 题可用</span><b>'+k+'</b>'
+      +'<small>专项训练 · 全部随机</small></button>';
+  }).join("");
+  $("v-moni").innerHTML='<h2 class="sec">按科刷模拟 <small>PICK SUBJECT</small></h2>'
+    +'<div class="vols">'+cards+'</div>'
+    +'<div style="margin-top:18px;"><button class="mini" onclick="VIEWS.moni()">← 返回模拟主页</button></div>';
+}
+function startSubjectMock(sub){
+  var pool=shuffle(MN().filter(function(q){return subjOf(q)===sub;}));
+  if(!pool.length)return;
+  EX_ROOM="moni";
+  startPaper(pool,{name:sub+" · 模拟专项"});
+}
+/* ---------- 错题集 ---------- */
+VIEWS.wrong=function(){
+  var ids=Object.keys(S.wrong).filter(function(id){return S.wrong[id]&&!S.mastered[id]&&findQ(id);});
+  var masteredN=Object.keys(S.mastered).length;
+  var rows=ids.map(function(id){
+    var q=findQ(id);
+    var rec=S.done[id];
+    var letters=["A","B","C","D"];
+    return '<div class="paper" style="padding:20px 24px;margin-bottom:13px;border-left:3px solid var(--bad);">'
+      +'<div class="qmeta"><span class="qtag subj">'+esc(subjOf(q))+'</span>'
+      +'<span class="qtag">'+(q.type===2?"多选":"单选")+'</span>'
+      +'<span style="margin-left:auto;font-size:12.5px;color:var(--ink2);">上次：'
+      +((rec&&rec.ok)?"已答对":'<b style="color:var(--bad)">答错</b>')+'</span></div>'
+      +'<div class="qstem" style="font-size:15px;">'+esc(q.q).replace(/\n/g,"<br>")+'</div>'
+      +'<div style="margin-top:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;">'
+      +'  <button class="mini" onclick="redoOne(\''+id+'\')">重做此题</button>'
+      +'  <button class="mini" onclick="masterOne(this,\''+id+'\')">标记掌握</button>'
+      +'  <details style="margin-left:auto;"><summary style="cursor:pointer;font-size:13px;color:var(--indigo);letter-spacing:1px;">看解析</summary>'
+      +'  <div class="expl" style="margin-top:10px;">正确答案 <b>'+[].concat(q.a).map(function(x){return letters[x];}).join("")+'</b><br>'
+      + esc(q.exp)+'</div></details>'
+      +'</div></div>';
+  }).join("");
+  $("v-wrong").innerHTML='<h2 class="sec">错题集 <small>WRONG BOOK · '+ids.length+' 题待重做</small></h2>'
+    +(ids.length?
+      '<div style="display:flex;gap:12px;margin-bottom:18px;">'
+      +'<button class="btn red" onclick="redoAllWrong()">错题特训（全部重做）</button>'
+      +'</div>'+rows
+      :'<div class="paper" style="text-align:center;color:var(--ink2);letter-spacing:2px;">暂无错题 —— 或已全部掌握 ✓</div>')
+    +(masteredN?'<p style="margin-top:14px;font-size:12.5px;color:var(--ink2);">另有 '+masteredN+' 题已标记掌握。</p>':"");
+};
+function redoOne(id){
+  var q=findQ(id);
+  go("wrong");
+  EX_ROOM="wrong";
+  startPaper([q],{name:"错题重做"});
+}
+function masterOne(btn,id){
+  S.wrong[id]=false;S.mastered[id]=true;save();VIEWS.wrong();
+}
+function redoAllWrong(){
+  var ids=Object.keys(S.wrong).filter(function(id){return S.wrong[id]&&!S.mastered[id]&&findQ(id);});
+  if(!ids.length)return;
+  go("wrong");
+  EX_ROOM="wrong";
+  startPaper(shuffle(ids.map(findQ)),{name:"错题特训"});
+}
+/* ---------- 法条页（词典式点击展开） ---------- */
+VIEWS.laws=function(){
+  var ft=FT();
+  if(!ft.length){
+    $("v-laws").innerHTML='<h2 class="sec">法条速查 <small>LAW DICTIONARY</small></h2>'+poolWarn();
+    return;
+  }
+  var noted=ft.filter(function(x){return x.a;}).length;
+  var chips='<div class="chips" style="margin-bottom:16px;"><button class="chip on" data-k="">全部（'+ft.length+'）</button>'
+    +SUBJECTS.filter(function(s){return ft.some(function(x){return x.k===s.k;});})
+      .map(function(s){
+        var n=ft.filter(function(x){return x.k===s.k;}).length;
+        return '<button class="chip" data-k="'+s.k+'">'+s.k+'（'+n+'）</button>';}).join("")
+    +'<button class="chip" data-k="__note">有详解（'+noted+'）</button></div>';
+  var list=ft.map(function(f,i){
+    return '<details class="law dic" data-sub="'+f.k+'" data-note="'+(f.a?1:0)+'">'
+      +'<summary><b>'+esc(f.n)+'</b><i>'+esc(f.t)+'</i>'
+      +(f.a?'<em>详解'+(f.w?'·易错':'')+'</em>':'<em>要旨</em>')
+      +'</summary>'
+      +'<div class="law-body">'
+      +'  <div class="law-sec"><h6>条 文 要 旨</h6><p>'+esc(f.p)+'</p></div>'
+      +(f.a?'<div class="law-sec ans"><h6>详 细 解 析</h6><div style="white-space:pre-wrap;">'+esc(f.a)+'</div></div>':'')
+      +(f.w?'<div class="law-sec warn"><h6>⚠ 易 错 提 醒</h6><div style="white-space:pre-wrap;">'+esc(f.w)+'</div></div>':'')
+      +'</div></details>';
+  }).join("");
+  $("v-laws").innerHTML='<h2 class="sec">法条词典 <small>'+ft.length+' 条 · 点击任意法条展开详解与易错点</small></h2>'
+    +'<input id="law-search" placeholder="检索条文关键词，如：正当防卫 / 诉讼时效 / 加速到期…"'
+    +' style="width:100%;border:1px solid var(--hair);background:var(--card);padding:11px 16px;'
+    +'font-family:inherit;font-size:14.5px;color:var(--ink);margin-bottom:14px;">'
+    +chips+'<div id="law-list">'+list+'</div>';
+  var filter=function(){
+    var kw=$("law-search").value.trim().toLowerCase();
+    var chipOn=document.querySelector('#v-laws .chip.on');
+    var mode=chipOn?chipOn.dataset.k:"";
+    document.querySelectorAll("#law-list .dic").forEach(function(d){
+      var hit=!kw||d.textContent.toLowerCase().indexOf(kw)>=0;
+      var okSub=!mode||mode==="__note"?true:d.dataset.sub===mode;
+      if(mode==="__note")okSub=d.dataset.note==="1";
+      d.style.display=(hit&&okSub)?"":"none";
+    });
+  };
+  $("law-search").addEventListener("input",filter);
+  $("v-laws").querySelectorAll(".chip").forEach(function(c){
+    c.addEventListener("click",function(){
+      $("v-laws").querySelectorAll(".chip").forEach(function(x){x.classList.remove("on");});
+      c.classList.add("on");filter();
+    });
+  });
+};
+/* ---------- 每日一练 ---------- */
+function startDaily(){
+  var key=new Date().toDateString();
+  if(S.today===key&&S.daily.length&&!S.dailyDone){
+    EX_ROOM="home";startPaper(S.daily.map(findQ).filter(Boolean),{name:"今日一练"});return;
+  }
+  var mix=[];
+  var subs=SUBJECTS.map(function(s){return s.k;});
+  subs.forEach(function(sk){
+    var pool=MN().concat(ZT()).filter(function(q){return subjOf(q)===sk;});
+    mix=mix.concat(shuffle(pool).slice(0,2));
+  });
+  while(mix.length<10){var extra=shuffle(MN().concat(ZT())).pop();if(!extra)break;if(mix.indexOf(extra)<0)mix.push(extra);}
+  mix=shuffle(mix).slice(0,10);
+  S.today=key;S.daily=mix.map(function(q){return q.id;});S.dailyDone=false;
+  save();
+  EX_ROOM="home";
+  startPaper(mix,{name:"今日一练 · 十题混测"});
+}
+/* 首页「开始刷题」直达模拟 */
+function goMoni(){go("moni");}
+</script>
+<script>
+/* ---------- 主观题模块 ---------- */
+var SJ=null; /* 当前主观题状态 */
+/* ============ 主观题全真考场：抽5题 · 240分钟 · 到点自动收卷 ============ */
+function startEssayMock(){
+  var sj=window.SHIFA_SJ||[];
+  if(sj.length<5){alert("主观题题库不足5题，先多积累！当前："+sj.length);return;}
+  var pool=shuffle(sj);
+  /* 优先保证题型多样：1道论述（单问）+4道案例（多问） */
+  var lunshu=pool.filter(function(x){return x.qs.length===1;});
+  var anli=pool.filter(function(x){return x.qs.length>1;});
+  var picked=[];
+  if(lunshu.length)picked.push(lunshu[0]);
+  while(picked.length<5&&anli.length){picked.push(anli.shift());}
+  while(picked.length<5&&lunshu.length>1){var r=lunshu.pop();if(picked.indexOf(r)<0)picked.push(r);}
+  if(!confirm("🏛 主观题全真考场\n\n· 抽取 "+picked.length+" 题（论述+案例分析混合，共 "+picked.reduce(function(a,x){return a+x.qs.length;},0)+" 问）\n· 限时 240 分钟（真实法考主观题时长），到点自动收卷\n· 每问作答后可对照参考要点自评\n\n确定开考？"))return;
+  SJ={mock:true,items:picked,idx:0,step:0,answers:{},done:{},
+      t0:Date.now(),deadline:Date.now()+240*60000};
+  ESSAY_TIMER=setInterval(essayTick,1000);
+  renderEssayMock();
+}
+var ESSAY_TIMER=null;
+function essayTick(){
+  if(!SJ||!SJ.mock){clearInterval(ESSAY_TIMER);ESSAY_TIMER=null;return;}
+  var left=SJ.deadline-Date.now();
+  if(left<=0){
+    clearInterval(ESSAY_TIMER);ESSAY_TIMER=null;
+    alert("考试时间到，系统自动收卷！");
+    SJ.step=0;
+    renderEssayMock();
+    return;
+  }
+  var el=document.getElementById("essay-clock");
+  if(el){
+    var mm=Math.floor(left/60000),ss=Math.floor(left%60000/1000);
+    el.textContent=(mm<10?"0":"")+mm+":"+(ss<10?"0":"")+ss;
+    el.style.color=left<20*60000?"var(--bad)":"var(--gold)";
+  }
+}
+function essayQuitMock(){
+  if(confirm("退出后本场作答全部作废，确定离开考场？")){
+    clearInterval(ESSAY_TIMER);ESSAY_TIMER=null;SJ=null;VIEWS.essay();
+  }
+}
+function renderEssayMock(){
+  var x=SJ.items[SJ.idx];
+  SJ.item=x; /* 兼容原渲染函数对 SJ.item 的引用 */
+  var q=x.qs[SJ.step];
+  var answered=SJ.answers[SJ.idx+"-"+SJ.step];
+  var totalQ=SJ.items.reduce(function(a,y){return a+y.qs.length;},0);
+  var doneN=Object.keys(SJ.answers).length;
+  var html=
+   '<div class="lesson-head">'
+  +'  <button class="quit" onclick="essayQuitMock()">← 离开考场</button>'
+  +'  <div class="lbar"><i style="width:'+Math.round(doneN/totalQ*100)+'%"></i></div>'
+  +'  <div class="dots">题 '+(SJ.idx+1)+'/'+SJ.items.length+' · 问 '+(SJ.step+1)+'/'+x.qs.length+' · 已答 '+doneN+'/'+totalQ+'</div>'
+  +'</div>'
+  +'<div class="paper">'
+  +'  <div class="qmeta"><span class="qtag subj">'+esc(x.k)+'</span>'
+  +'    <span class="qtag">'+(x.qs.length===1?"论述题":"案例分析")+'</span>'
+  +'    <span id="essay-clock" style="margin-left:auto;font-weight:700;letter-spacing:1px;">--:--</span></div>'
+  +(SJ.step===0?'<div class="mn" style="border-left-color:var(--indigo);background:rgba(51,80,92,.05);margin:0 0 16px;"><b>案情 </b>'+esc(x.material).replace(/\n/g,"<br>")+'</div>':'')
+  +'<div class="qstem" style="font-size:16px;"><b style="color:var(--cinnabar);">问'+(SJ.step+1)+'：</b>'+esc(q.q)+'</div>'
+  +(answered
+    ? '<div style="margin-top:16px;"><div style="font-size:12.5px;letter-spacing:2px;color:var(--ink2);margin-bottom:6px;">你的作答（已保存）</div>'
+      +'<div class="paper" style="padding:14px 18px;background:rgba(51,80,92,.03);box-shadow:none;white-space:pre-wrap;font-size:14.5px;line-height:1.9;">'+esc(answered)+'</div></div>'
+      +'<div class="expl" style="margin-top:16px;"><span class="verdict" style="color:var(--gold);">参 考 答 案</span><br>'
+      +'<div style="white-space:pre-wrap;margin-top:8px;">'+esc(q.a||q.pts||'')+'</div>'
+      +'<span class="src">答题要领：'+esc(x.tip||'三段论：结论—法条依据—涵射分析')+'</span></div>'
+      +'<div style="margin-top:18px;display:flex;gap:12px;">'
+      +  (SJ.step<x.qs.length-1
+          ?'<button class="btn" onclick="SJ.step++;renderEssayMock()">下一问 →</button>'
+          :(SJ.idx<SJ.items.length-1
+            ?'<button class="btn red" onclick="SJ.idx++;SJ.step=0;renderEssayMock()">下一题（'+(SJ.idx+2)+'/'+SJ.items.length+'）→</button>'
+            :'<button class="btn red" onclick="finishEssayMock()">交 卷</button>'))
+      +'</div>'
+    : '<textarea id="essay-input" placeholder="在此作答：先写结论，再写理由（构成要件逐一对应），最后引法条……"'
+      +' style="width:100%;min-height:220px;margin-top:16px;border:1px solid var(--hair);background:var(--card);'
+      +'padding:14px 16px;font-family:inherit;font-size:15px;line-height:1.9;color:var(--ink);resize:vertical;">'
+      +esc(SJ.answers&&SJ.answers[SJ.idx+"-"+SJ.step]||"")+'</textarea>'
+      +'<div style="margin-top:14px;display:flex;gap:12px;">'
+      +  '<button class="btn red" onclick="revealAnswerMock()">保存并对照参考答案</button>'
+      +'</div>')
+  +'</div>';
+  $("v-essay").innerHTML=html;
+  window.scrollTo(0,0);
+}
+function revealAnswerMock(){
+  var v=document.getElementById("essay-input");
+  SJ.answers=SJ.answers||{};
+  var key=SJ.idx+"-"+SJ.step;
+  SJ.answers[key]=(v&&v.value||"").trim();
+  if(!SJ.answers[key]&&!confirm("未输入任何内容，直接看参考答案？"))return;
+  renderEssayMock();
+}
+function finishEssayMock(){
+  S.sjDone=S.sjDone||{};
+  SJ.items.forEach(function(x){S.sjDone[x.id]={t:Date.now(),n:x.qs.length};});
+  clearInterval(ESSAY_TIMER);ESSAY_TIMER=null;
+  save();hud();
+  alert("主观题考场完成 ✓ 共 "+Object.keys(SJ.answers).length+" 问已作答，历年成绩可在总览查看。");
+  SJ=null;VIEWS.essay();
+}
+VIEWS.essay=function(){
+  var sj=window.SHIFA_SJ||[];
+  if(!sj.length){
+    $("v-essay").innerHTML='<h2 class="sec">主观题修行 <small>案例分析与论述</small></h2>'+poolWarn();
+    return;
+  }
+  var bySub={};
+  sj.forEach(function(x){(bySub[x.k]||(bySub[x.k]=[])).push(x);});
+  var cards=sj.map(function(x,i){
+    var st=S.sjDone&&S.sjDone[x.id];
+    return '<button class="vol" data-zi="'+esc(x.k.slice(0,1))+'" onclick="openEssay('+i+')">'
+      +'<span class="no">'+esc(x.k)+' · '+(x.qs.length===1?"论述":"案例分析")+'</span><b>'+esc(x.t)+'</b>'
+      +'<small>'+(st?'已练习 · <span style="color:var(--ok)">✓</span>':'未练习 · '+x.qs.length+' 问')+'</small>'
+      +'<div class="bar"><i style="width:'+(st?'100':'0')+'%"></i></div></button>';
+  }).join("");
+  $("v-essay").innerHTML='<h2 class="sec">主观题修行 <small>案例分析与论述 · 逐问作答后对照参考答案</small></h2>'
+    +'<div class="vols" style="margin-bottom:22px;">'
+    +'<button class="vol" data-zi="考" onclick="startEssayMock()"><span class="no">全真考场</span><b>主观题模拟卷 · 5 题 240 分钟</b><small>论述+案例分析混合抽题 · 限时锁卷到点自动收卷（真实法考主观题时长）</small></button>'
+    +'</div>'
+    +'<div class="vols">'+cards+'</div>'
+    +'<p style="margin-top:20px;font-size:12.5px;color:var(--ink2);line-height:1.9;">'
+    +'※ 用法：先自己写（纸上或打字都行），点「对照参考答案」逐问核对采分点；'
+    +'参考答案按「三段论+法条号」的阅卷习惯编写。写作训练建议配合拾词写作坊的批改习惯：写完再对，不要先看。</p>';
+};
+function openEssay(i){
+  var x=(window.SHIFA_SJ||[])[i];
+  if(!x)return;
+  SJ={item:x,step:0};
+  renderEssay();
+}
+function renderEssay(){
+  var x=SJ.item;
+  var q=x.qs[SJ.step];
+  var last=SJ.step===x.qs.length-1;
+  var answered=SJ.answers&&SJ.answers[SJ.step];
+  var html=
+   '<div class="lesson-head">'
+  +'  <button class="quit" onclick="VIEWS.essay()">← 返回</button>'
+  +'  <div class="lbar"><i style="width:'+Math.round((SJ.step+1)/x.qs.length*100)+'%"></i></div>'
+  +'  <div class="dots">第 '+(SJ.step+1)+' / '+x.qs.length+' 问</div>'
+  +'</div>'
+  +'<div class="paper">'
+  +'  <div class="qmeta"><span class="qtag subj">'+esc(x.k)+'</span>'
+  +'    <span class="qtag">'+(x.qs.length===1?"论述题":"案例分析")+'</span>'
+  +'    <span style="margin-left:auto;color:var(--gold);letter-spacing:1px;">'+esc(x.t)+'</span></div>'
+  +(SJ.step===0?'<div class="mn" style="border-left-color:var(--indigo);background:rgba(51,80,92,.05);margin:0 0 16px;"><b>案情 </b>'+esc(x.material).replace(/\n/g,"<br>")+'</div>':'')
+  +'<div class="qstem" style="font-size:16px;"><b style="color:var(--cinnabar);">问'+(SJ.step+1)+'：</b>'+esc(q.q)+'</div>'
+  +(answered
+    ? '<div style="margin-top:16px;"><div style="font-size:12.5px;letter-spacing:2px;color:var(--ink2);margin-bottom:6px;">你的作答（已保存）</div>'
+      +'<div class="paper" style="padding:14px 18px;background:rgba(51,80,92,.03);box-shadow:none;white-space:pre-wrap;font-size:14.5px;line-height:1.9;">'+esc(SJ.answers[SJ.step])+'</div></div>'
+      +'<div class="expl" style="margin-top:16px;"><span class="verdict" style="color:var(--gold);">参 考 答 案</span><br>'
+      +'<div style="white-space:pre-wrap;margin-top:8px;">'+esc(q.a)+'</div>'
+      +'<span class="src">答题要领：'+esc(x.tip)+'</span></div>'
+      +'<div style="margin-top:18px;display:flex;gap:12px;">'
+      +  '<button class="btn line" onclick="SJ.answers['+SJ.step+']=null;renderEssay()">修改作答</button>'
+      +  (last?'<button class="btn red" onclick="finishEssay()">完 成</button>'
+            :'<button class="btn" onclick="SJ.step++;renderEssay()">下一问 →</button>')
+      +'</div>'
+    : '<textarea id="essay-input" placeholder="在此作答：先写结论，再写理由（构成要件逐一对应），最后引法条……"'
+      +' style="width:100%;min-height:200px;margin-top:16px;border:1px solid var(--hair);background:var(--card);'
+      +'padding:14px 16px;font-family:inherit;font-size:15px;line-height:1.9;color:var(--ink);resize:vertical;">'
+      +esc(SJ.answers&&SJ.answers[SJ.step]||"")+'</textarea>'
+      +'<div style="margin-top:14px;display:flex;gap:12px;">'
+      +  '<button class="btn red" onclick="revealAnswer()">对照参考答案</button>'
+      +  (last?'':'<button class="btn line" onclick="SJ.step++;renderEssay()">跳过此问</button>')
+      +'</div>')
+  +'</div>';
+  $("v-essay").innerHTML=html;
+  window.scrollTo(0,0);
+}
+function revealAnswer(){
+  var v=document.getElementById("essay-input");
+  SJ.answers=SJ.answers||{};
+  SJ.answers[SJ.step]=(v&&v.value||"").trim();
+  if(!SJ.answers[SJ.step]&&!confirm("未输入任何内容，直接看参考答案？"))return;
+  renderEssay();
+}
+function finishEssay(){
+  S.sjDone=S.sjDone||{};
+  S.sjDone[SJ.item.id]={t:Date.now(),n:SJ.item.qs.length};
+  save();
+  VIEWS.essay();
+}
+</script>
+<script>
+/* ---------- 启动 ---------- */
+function boot(){
+  buildIdx();
+  /* 合并案例补丁（按标题匹配，为早期讲义补案例） */
+  var patch=window.SHIFA_KPCASE||{};
+  (window.SHIFA_KP||[]).forEach(function(x){
+    if(patch[x.t])x.case=patch[x.t];
+  });
+  /* 合并法条详解注（按「条号|标题」匹配） */
+  var fn=window.SHIFA_FTNOTE||{};
+  (window.SHIFA_FT||[]).forEach(function(f){
+    var n=fn[f.n+"|"+f.t];
+    if(n){f.a=n.a;f.w=n.w;}
+  });
+  VIEWS.home=renderHome;
+  VIEWS.study=renderStudy;
+  hud();
+  go("home");
+}
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot);
+else boot();
+</script>
+<script src="tiku/zs052.js"></script>
+<script src="tiku/zs053.js"></script>
+<script src="tiku/zs054.js"></script>
+<script src="tiku/zs055.js"></script>
+<script src="tiku/zs056.js"></script>
+<script src="tiku/zs057.js"></script>
+<script src="tiku/zs058.js"></script>
+<script src="tiku/zs059.js"></script>
+<script src="tiku/zs060.js"></script>
+<script src="tiku/zs061.js"></script>
+<script src="tiku/al031.js"></script>
+<script src="tiku/al032.js"></script>
+<script src="tiku/al033.js"></script>
+<script src="tiku/zt040.js"></script>
+<script src="tiku/zt041.js"></script>
+<script src="tiku/zt042.js"></script>
+<script src="tiku/zt043.js"></script>
+<script src="tiku/zt044.js"></script>
+<script src="tiku/zt045.js"></script>
+<script src="tiku/zt046.js"></script>
+<script src="tiku/zt047.js"></script>
+<script src="tiku/zt048.js"></script>
+<script src="tiku/zt049.js"></script>
+<script src="tiku/zt050.js"></script>
+<script src="tiku/zt051.js"></script>
+<script src="tiku/mn034.js"></script>
+<script src="tiku/tk072.js"></script>
+<script src="tiku/tk077.js"></script>
+<script src="tiku/tk078.js"></script>
+<script src="tiku/tk079.js"></script>
+<script src="tiku/tk080.js"></script>
+<script src="tiku/tk081.js"></script>
+<script src="tiku/qz030.js"></script>
+<script src="tiku/tk082.js"></script>
+<script src="tiku/tk083.js"></script>
+<script src="tiku/tk062.js"></script>
+<script src="tiku/fc009.js"></script>
+<script src="tiku/fc008.js"></script>
+<script src="tiku/fc002.js"></script>
+<script src="tiku/fc003.js"></script>
+<script src="tiku/fc004.js"></script>
+<script src="tiku/fc005.js"></script>
+<script src="tiku/fc006.js"></script>
+<script src="tiku/fc007.js"></script>
+<script src="tiku/tk063.js"></script>
+<script src="tiku/tk064.js"></script>
+<script src="tiku/tk065.js"></script>
+<script src="tiku/tk066.js"></script>
+<script src="tiku/tk067.js"></script>
+<script src="tiku/tk068.js"></script>
+<script src="tiku/tk069.js"></script>
+<script src="tiku/tk070.js"></script>
+<script src="tiku/tk071.js"></script>
+<script src="tiku/tk073.js"></script>
+<script src="tiku/tk074.js"></script>
+<script src="tiku/tk075.js"></script>
+<script src="tiku/tk076.js"></script>
+<script src="tiku/fc002.js"></script>
+<script src="tiku/fc003.js"></script>
+<script src="tiku/fc004.js"></script>
+<script src="tiku/fc005.js"></script>
+<script src="tiku/fc006.js"></script>
+<script src="tiku/fc007.js"></script>
+<script src="tiku/zg000.js"></script>
+<script src="tiku/zg001.js"></script>
+<script src="tiku/ft035.js"></script>
+<script src="tiku/ft036.js"></script>
+<script src="tiku/ft037.js"></script>
+<script src="tiku/ftz038.js"></script>
+<script src="tiku/ftz039.js"></script>
+<script src="tiku/qb010.js"></script>
+<script src="tiku/qb011.js"></script>
+<script src="tiku/qb012.js"></script>
+<script src="tiku/qb013.js"></script>
+<script src="tiku/qb014.js"></script>
+<script src="tiku/qb015.js"></script>
+<script src="tiku/qb016.js"></script>
+<script src="tiku/qb017.js"></script>
+<script src="tiku/qb018.js"></script>
+<script src="tiku/qb019.js"></script>
+<script src="tiku/qb020.js"></script>
+<script src="tiku/qb021.js"></script>
+<script src="tiku/qb022.js"></script>
+<script src="tiku/qb023.js"></script>
+<script src="tiku/qb024.js"></script>
+<script src="tiku/qb025.js"></script>
+<script src="tiku/qb026.js"></script>
+<script src="tiku/qb027.js"></script>
+<script src="tiku/qb028.js"></script>
+<script src="tiku/qb029.js"></script>
+</body>
+</html>
