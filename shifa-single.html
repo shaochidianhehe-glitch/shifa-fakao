@@ -1109,10 +1109,14 @@ function shuffle(arr){
   return a;
 }
 /* pool: 题目数组；meta:{name,src} */
+/* 生成单题选项显示映射：displayPos -> 原始索引 */
+function makePerm(){var p=[0,1,2,3];for(var i=p.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=p[i];p[i]=p[j];p[j]=t;}return p;}
 function startPaper(pool,meta){
   if(!pool.length){alert("题库为空");return;}
+  var pm={};
+  pool.forEach(function(q){pm[q.id]=makePerm();});
   EX={qs:pool,idx:0,ans:{},mode:"practice",name:meta.name,src:meta.src||"",pid:meta.pid||null,
-      t0:Date.now()};
+      t0:Date.now(),permMap:pm,counted:{}};
   renderExam();
 }
 /* 考场模式：全部作答完才出成绩与解析 */
@@ -1121,11 +1125,15 @@ function renderExam(){
   var n=EX.qs.length;
   var letters=["A","B","C","D"];
   var multi=q.type===2;
+  var perm=EX.permMap&&EX.permMap[q.id]?EX.permMap[q.id]:[0,1,2,3];
+  /* 原始索引 -> 显示位置字母 */
+  var dispLetter={};
+  perm.forEach(function(orig,disp){dispLetter[orig]=letters[disp];});
   var picked=EX.ans[q.id]!==undefined?EX.ans[q.id]:null;
   /* 即时反馈：练习模式下已作答的题显示对错+解析 */
   var answered=EX.mode==="practice"&&picked!==null;
   var ok=answered?gradeOne(q,picked):false;
-  var wantStr=(q.type===2?[].concat(q.a):[q.a]).map(function(v){return letters[v];}).join("、");
+  var wantStr=(q.type===2?[].concat(q.a):[q.a]).map(function(v){return dispLetter[v];}).join("、");
   var html=
   '<div class="lesson-head">'
   +'  <button class="quit" onclick="quitExam()">← 退出</button>'
@@ -1140,15 +1148,16 @@ function renderExam(){
   +'  <div class="opts">'
   + q.o.map(function(op,i){
       var cls="opt";
+      var orig=perm[i]; /* 显示位i对应原始索引orig */
       if(answered){
         var want=[].concat(q.a);
         var got=[].concat(picked===null?[]:picked);
-        var isWant=want.indexOf(i)>=0, isGot=got.indexOf(i)>=0;
+        var isWant=want.indexOf(orig)>=0, isGot=got.indexOf(orig)>=0;
         if(isWant&&isGot)cls="opt right";
         else if(isWant)cls="opt right";
         else if(isGot)cls="opt wrong";
       }
-      return '<button class="'+cls+'" data-i="'+i+'" onclick="pickOpt('+i+')"><b>'+letters[i]+'．</b><span>'+esc(op)+'</span></button>';
+      return '<button class="'+cls+'" data-i="'+i+'" onclick="pickOpt('+i+')"><b>'+letters[i]+'．</b><span>'+esc(q.o[orig])+'</span></button>';
     }).join("")
   +'  </div>'
   +(answered
@@ -1175,10 +1184,13 @@ function renderExam(){
 function confirmMulti(){
   var q=EX.qs[EX.idx];
   if(EX.ans[q.id]===undefined||!(EX.ans[q.id].length)){alert("请先选择答案");return;}
+  if(EX.mode==="practice")recordPractice(q);
   renderExam();
 }
-function pickOpt(i){
+function pickOpt(disp){
   var q=EX.qs[EX.idx];
+  var perm=EX.permMap&&EX.permMap[q.id]?EX.permMap[q.id]:[0,1,2,3];
+  var i=perm[disp]; /* 显示位 -> 原始索引 */
   var cur=EX.ans[q.id];
   /* 练习模式即时反馈：已作答的题锁定不可再改 */
   if(EX.mode==="practice"&&cur!==undefined)return;
@@ -1189,9 +1201,22 @@ function pickOpt(i){
     set.sort();EX.ans[q.id]=set;
   }else{
     EX.ans[q.id]=i;
-    /* 单选答题后立即显示解析（不再自动跳题） */
   }
+  /* 练习模式：单选作答即判定并保存进度 */
+  if(EX.mode==="practice"&&q.type!==2)recordPractice(q);
   renderExamNoJump();
+}
+/* 练习模式：作答一题立即计入统计（防重复计数） */
+function recordPractice(q){
+  if(EX.counted[q.id])return;
+  EX.counted[q.id]=true;
+  var p=EX.ans[q.id];
+  var ok=gradeOne(q,p);
+  S.total++;if(ok)S.right++;
+  S.done[q.id]={p:p===undefined?null:p,a:[].concat(q.a),ok:ok,t:Date.now(),src:EX.name};
+  if(!ok){S.wrong[q.id]=true;delete S.mastered[q.id];}
+  else{delete S.wrong[q.id];S.mastered[q.id]=true;}
+  save();hud();
 }
 function renderExamNoJump(){renderExam();}
 function examPrev(){if(EX.idx>0){EX.idx--;renderExam();}}
@@ -1220,12 +1245,12 @@ function submitPaper(){
   EX.result=EX.qs.map(function(q){
     var p=EX.ans[q.id];var ok=gradeOne(q,p);
     if(ok)rightN++;
-    /* 记录统计 */
-    if(S.done[q.id]){S.total++;if(ok)S.right++;}
-    else{S.total++;if(ok)S.right++;}
+    /* 记录统计（练习模式已在作答时实时计入，此处跳过防重复） */
+    var already=EX.counted&&EX.counted[q.id];
+    if(!already){S.total++;if(ok)S.right++;}
     S.done[q.id]={p:p===undefined?null:p,a:[].concat(q.a),ok:ok,t:Date.now(),src:EX.name};
     if(!ok){S.wrong[q.id]=true;delete S.mastered[q.id];}
-    else if(S.wrong[q.id]&&EX.fromWrong){}
+    else{delete S.wrong[q.id];S.mastered[q.id]=true;}
     return {q:q,p:p===undefined?null:p,ok:ok};
   });
   S.papers["p"+Date.now()]={score:rightN,total:EX.qs.length,t:Date.now(),name:EX.name};
@@ -1357,7 +1382,7 @@ function startZtMock(y){
   var multiN=qs.filter(function(q){return q.type===2;}).length;
   if(!confirm("🏛 真题考场规则（"+y+" 年卷）\n\n· 共 "+qs.length+" 题，限时 "+mins+" 分钟\n· 考场模式锁定试卷：交卷前不显示任何答案与解析\n· 时间结束自动交卷\n· 成绩按客观题 300 分制折算（及格线 180 分）\n\n确定进入考场？"))return;
   EX_ROOM="zhenti";
-  EX={qs:qs,idx:0,ans:{},mode:"mock",name:y+" 年真题 · 全真考场",
+  EX={qs:qs,idx:0,ans:{},mode:"mock",permMap:(function(){var m={};qs.forEach(function(q){m[q.id]=makePerm();});return m;})(),name:y+" 年真题 · 全真考场",
       t0:Date.now(),deadline:Date.now()+mins*60000,
       marked:{},blueprint:true,ztYear:y};
   renderMockExam();
@@ -1466,7 +1491,7 @@ function startSmartPaper(){
   picked=shuffle(picked).slice(0,100);
   if(!confirm("🏛 完整卷智能组卷\n\n· "+picked.length+" 题，按真实八科权重配比\n· 限时 180 分钟，到点自动交卷\n· 300 分制折算（180 及格）\n· 每次组卷组合不同，可反复全真演练\n\n确定进入考场？"))return;
   EX_ROOM="moni";
-  EX={qs:picked,idx:0,ans:{},mode:"mock",name:"完整卷 · 智能八科权重",
+  EX={qs:picked,idx:0,ans:{},mode:"mock",permMap:(function(){var m={};picked.forEach(function(q){m[q.id]=makePerm();});return m;})(),name:"完整卷 · 智能八科权重",
       t0:Date.now(),deadline:Date.now()+MOCK_BLUEPRINT.minutes*60000,
       marked:{},blueprint:true};
   renderMockExam();
@@ -1502,7 +1527,7 @@ function startRealMock(){
   if(!confirm("全真模考规则：\n· 100 题客观卷（单选+多选混合）\n· 限时 "+MOCK_BLUEPRINT.minutes+" 分钟，到时自动交卷\n· 全部作答完才出成绩与解析\n\n确定开始？"))return;
   var qs=pickBlueprint(pool);
   EX_ROOM="moni";
-  EX={qs:qs,idx:0,ans:{},mode:"mock",name:"客观题全真模考 · 100题",
+  EX={qs:qs,idx:0,ans:{},mode:"mock",permMap:(function(){var m={};qs.forEach(function(q){m[q.id]=makePerm();});return m;})(),name:"客观题全真模考 · 100题",
       t0:Date.now(),deadline:Date.now()+MOCK_BLUEPRINT.minutes*60000,
       marked:{},blueprint:true};
   renderMockExam();
@@ -1573,6 +1598,7 @@ function renderMockExam(){
   var n=EX.qs.length;
   var letters=["A","B","C","D"];
   var multi=q.type===2;
+  var perm=EX.permMap&&EX.permMap[q.id]?EX.permMap[q.id]:[0,1,2,3];
   var picked=EX.ans[q.id]!==undefined?EX.ans[q.id]:null;
   var answeredN=EX.qs.filter(function(x){return EX.ans[x.id]!==undefined;}).length;
   var html=
@@ -1588,7 +1614,8 @@ function renderMockExam(){
   +'  <div class="qstem">'+esc(q.q).replace(/\n/g,"<br>")+'</div>'
   +'  <div class="opts">'
   + q.o.map(function(op,i){
-      return '<button class="opt" data-i="'+i+'" onclick="pickOpt('+i+')"><b>'+letters[i]+'．</b><span>'+esc(op)+'</span></button>';
+      var orig=perm[i];
+      return '<button class="opt" data-i="'+i+'" onclick="pickOpt('+i+')"><b>'+letters[i]+'．</b><span>'+esc(q.o[orig])+'</span></button>';
     }).join("")
   +'  </div>'
   +'  <div style="margin-top:16px;display:flex;gap:10px;align-items:center;">'
