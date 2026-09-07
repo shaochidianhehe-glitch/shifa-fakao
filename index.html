@@ -377,7 +377,8 @@ function renderHome(){
   +'<div class="vols">'+cards+'</div>'
   +'<p style="margin-top:22px;font-size:12.5px;color:var(--ink2);line-height:1.9;">'
   +'※ 真题依公开回忆版整理，仅供个人备考参考；模拟题为依考情原创编写。'
-  +'进度保存在本机浏览器中，请勿清除站点数据。</p>';
+  +'进度保存在本机浏览器中，请勿清除站点数据。<br>'
+  +'<a href="download.html" style="color:var(--indigo);">⬇ 下载到本机离线使用（点此下载 zip）</a></p>';
   $("exam-date").addEventListener("change",function(){
     S.examDate=this.value||S.examDate; save(); hud();
   });

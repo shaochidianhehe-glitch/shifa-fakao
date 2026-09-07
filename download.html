@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>下载拾法 · 法考修行</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;900&display=swap" rel="stylesheet">
+<style>
+  :root{--paper:#f4efe3;--card:#fdfbf5;--ink:#2f2b26;--ink2:#6f6759;--hair:#d9d1bc;--cinnabar:#a63d2f;--indigo:#33505c;--gold:#a08444;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:"Noto Serif SC","Source Han Serif SC","STSong","SimSun",serif;color:var(--ink);background:var(--paper);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;}
+  .box{background:var(--card);border:1px solid var(--hair);border-radius:3px;box-shadow:0 8px 24px -18px rgba(90,78,55,.25);padding:40px 36px;max-width:430px;width:100%;text-align:center;}
+  .seal{width:52px;height:52px;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;background:var(--cinnabar);color:#f7efe2;font-size:26px;font-weight:900;border-radius:3px;box-shadow:inset 0 0 0 2px rgba(247,239,226,.35);}
+  h1{font-size:22px;letter-spacing:6px;font-weight:900;}
+  .sub{font-size:12px;color:var(--ink2);letter-spacing:2.5px;margin-top:6px;}
+  .desc{font-size:13.5px;color:var(--ink2);line-height:2;margin:20px 0 24px;text-align:left;}
+  .btn{display:block;width:100%;font-family:inherit;cursor:pointer;font-size:16px;letter-spacing:4px;font-weight:600;color:#f7efe2;background:var(--cinnabar);border:none;border-radius:2px;padding:15px 20px;transition:.15s;text-decoration:none;text-align:center;}
+  .btn:hover{background:#8f3327;}
+  .btn:active{transform:translateY(1px);}
+  .btn.gh{background:transparent;color:var(--indigo);border:1px solid var(--indigo);margin-top:10px;font-size:13.5px;padding:11px;}
+  .tip{font-size:12px;color:var(--ink2);margin-top:16px;line-height:1.9;}
+</style>
+</head>
+<body>
+<div class="box">
+  <div class="seal">法</div>
+  <h1>拾法</h1>
+  <div class="sub">JURIS GLEANINGS · 法考修行</div>
+  <div class="desc">
+    八科刷题 · 全真模考 · 法条速查<br>
+    下载一个 zip，解压后<b>双击 index.html</b> 即可使用，无需安装、无需联网。
+    学习进度保存在你自己的设备上。
+  </div>
+  <a class="btn" id="dl" href="shifa-fakao.zip" download="拾法.zip">⬇ 下载拾法（约 1 MB）</a>
+  <a class="btn gh" href="https://github.com/shaochidianhehe-glitch/shifa-fakao" target="_blank">或到 GitHub 仓库查看源码</a>
+  <div class="tip">
+    手机用户：下载后用「文件管理」找到 zip → 解压 → 用浏览器打开 index.html。<br>
+    电脑用户：解压后双击 index.html。
+  </div>
+</div>
+</body>
+</html>
