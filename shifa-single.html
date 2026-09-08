@@ -982,18 +982,22 @@ function renderHome(){
   +'      <input type="date" id="exam-date" value="'+esc(S.examDate)+'" '
   +'      style="margin-left:10px;border:1px solid var(--hair);background:var(--card);padding:5px 9px;font-family:inherit;color:var(--ink);"></label>'
   +'    <button class="mini" id="btn-daily">'+(S.today===daily&&S.dailyDone?'今日一练已完成 ✓':'开始今日一练（10 题混合卷）')+'</button>'
+    +'<button class="mini" id="btn-reset" style="color:var(--bad);border-color:#e0c4be;">🗑 清除做题记录</button>'
   +'  </div>'
   +'</div>'
+  +(S.session?resumeBanner():"")
   +'<h2 class="sec">部门法 <small>BY SUBJECT · 点击进入该科刷题</small></h2>'
   +'<div class="vols">'+cards+'</div>'
   +'<p style="margin-top:22px;font-size:12.5px;color:var(--ink2);line-height:1.9;">'
   +'※ 真题依公开回忆版整理，仅供个人备考参考；模拟题为依考情原创编写。'
   +'进度保存在本机浏览器中，请勿清除站点数据。<br>'
-  +'<a href="download.html" style="color:var(--indigo);">⬇ 下载到本机离线使用（点此下载 zip）</a></p>';
+  +'<a href="download.html" style="color:var(--indigo);">⬇ 下载到本机离线使用（点此下载 zip）</a></p>'
+  + diagHTML();
   $("exam-date").addEventListener("change",function(){
     S.examDate=this.value||S.examDate; save(); hud();
   });
   $("btn-daily").addEventListener("click",startDaily);
+  $("btn-reset").addEventListener("click",resetProgress);
 }
 /* ---------- 渲染：知识点 ---------- */
 var KP_SUB=null; /* 当前打开的讲 */
@@ -1111,6 +1115,79 @@ function shuffle(arr){
 /* pool: 题目数组；meta:{name,src} */
 /* 生成单题选项显示映射：displayPos -> 原始索引 */
 function makePerm(){var p=[0,1,2,3];for(var i=p.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=p[i];p[i]=p[j];p[j]=t;}return p;}
+/* 会话持久化：练习模式随时可中断续做 */
+function saveSession(){
+  if(!EX||EX.mode!=="practice")return;
+  try{
+    S.session={name:EX.name, room:EX_ROOM, ids:EX.qs.map(function(q){return q.id;}),
+      idx:EX.idx, ans:EX.ans, permMap:EX.permMap, t:Date.now()};
+    save();
+  }catch(e){}
+}
+function clearSession(){ if(S.session){delete S.session; save();} }
+function resumeSession(){
+  var ss=S.session; if(!ss)return;
+  var qs=[]; var pools=MN().concat(ZT()); var byId={};
+  pools.forEach(function(q){byId[q.id]=q;});
+  for(var i=0;i<ss.ids.length;i++){
+    var q=byId[ss.ids[i]];
+    if(!q){alert("题库已更新，原会话题目找不到，无法续做");clearSession();return;}
+    qs.push(q);
+  }
+  EX_ROOM=ss.room||"study";
+  EX={qs:qs,idx:ss.idx||0,ans:ss.ans||{},mode:"practice",name:ss.name,src:"",pid:null,
+      t0:Date.now(),permMap:ss.permMap||{},counted:(function(){var c={};qs.forEach(function(q){if(S.done[q.id])c[q.id]=true;});return c;})()};
+  go(EX_ROOM);
+  renderExam();
+  window.scrollTo(0,0);
+}
+function saveQuitExam(){
+  saveSession();
+  EX=null;VIEWS[EX_ROOM]&&VIEWS[EX_ROOM]();
+}
+function resumeBanner(){
+  var ss=S.session;
+  var answered=ss.ans?Object.keys(ss.ans).length:0;
+  var when=new Date(ss.t);
+  var hh=('0'+when.getHours()).slice(-2)+':'+('0'+when.getMinutes()).slice(-2);
+  var md=(when.getMonth()+1)+'月'+when.getDate()+'日';
+  return '<div class="paper" style="margin-bottom:22px;border-left:3px solid var(--gold);display:flex;align-items:center;gap:16px;flex-wrap:wrap;">'
+    +'<div style="flex:1;min-width:220px;">'
+    +'<b style="letter-spacing:2px;">📖 有未完成的刷题</b>'
+    +'<div style="font-size:13px;color:var(--ink2);margin-top:4px;">'+esc(ss.name)+' · 已答 '+answered+' 题 · 进度第 '+((ss.idx||0)+1)+' 题 · '+md+' '+hh+'</div>'
+    +'</div>'
+    +'<div style="display:flex;gap:10px;">'
+    +'<button class="btn red" style="padding:10px 22px;font-size:14px;" onclick="resumeSession()">▶ 继续作答</button>'
+    +'<button class="mini" onclick="discardSession()">放弃本次</button>'
+    +'</div></div>';
+}
+function discardSession(){
+  if(!confirm("放弃后该次会话的作答记录将只保留已实时计入的统计，确认放弃续做？"))return;
+  clearSession();VIEWS.home();
+}
+function resetProgress(){
+  if(!confirm("⚠ 确定清除全部做题记录？\n\n将重置：累计作答、正确率、错题集、掌握标记、历次成绩。\n考试日期设置保留。此操作不可撤销！"))return;
+  if(!confirm("再次确认：真的要清空所有做题记录吗？"))return;
+  S.total=0;S.right=0;S.done={};S.wrong={};S.mastered={};S.papers={};
+  delete S.session;
+  save();hud();VIEWS.home();
+  alert("已清除全部做题记录，可重新开始。");
+}
+function diagHTML(){
+  var mn=(window.SHIFA_MN||[]).length, zt=(window.SHIFA_ZT||[]).length,
+      kp=(window.SHIFA_KP||[]).length, ft=(window.SHIFA_FT||[]).length,
+      sj=(window.SHIFA_SJ||[]).length;
+  var ok = mn>1500 && ft>3000;
+  if(ok) return '<div style="margin-top:14px;font-size:12px;color:var(--ink2);">'+
+    '✓ 数据自检：题库 '+mn+' · 真题 '+zt+' · 讲义 '+kp+' · 法条 '+ft+' · 主观 '+sj+' —— 全部就绪</div>';
+  return '<div class="mn" style="border-left-color:var(--bad);background:rgba(166,61,47,.06);margin-top:14px;">'+
+    '<b>⚠ 数据自检未通过</b>（题库 '+mn+'/1844 · 真题 '+zt+'/161 · 讲义 '+kp+'/73 · 法条 '+ft+'/3359 · 主观 '+sj+'/12）<br>'+
+    '题库文件没有加载成功。常见原因：<br>'+
+    '1. index.html 和 tiku 文件夹没有放在一起（解压后必须在同一文件夹）；<br>'+
+    '2. 安全软件（360/电脑管家/Defender）拦截或隔离了 tiku 里的 js 文件——请查看拦截记录并信任；<br>'+
+    '3. 解压不完整——请重新解压全部内容。'+
+    '</div>';
+}
 function startPaper(pool,meta){
   if(!pool.length){alert("题库为空");return;}
   var pm={};
@@ -1137,6 +1214,7 @@ function renderExam(){
   var html=
   '<div class="lesson-head">'
   +'  <button class="quit" onclick="quitExam()">← 退出</button>'
+  +(EX.mode==="practice"?'  <button class="mini" onclick="saveQuitExam()" style="margin-left:10px;">💾 保存退出</button>':'')
   +'  <div class="lbar"><i style="width:'+Math.round((EX.idx)/n*100)+'%"></i></div>'
   +'  <div class="dots">第 '+ (EX.idx+1) +" / "+n+' 题</div>'
   +'</div>'
@@ -1226,8 +1304,13 @@ function examNext(){
   if(EX.idx<EX.qs.length-1){EX.idx++;renderExam();}
 }
 function quitExam(){
-  if(!confirm("退出后本次作答不保存，确定退出？"))return;
-  EX=null;VIEWS[EX_ROOM]&&VIEWS[EX_ROOM]();
+  if(EX.mode==="practice"){
+    saveSession();
+    EX=null;VIEWS[EX_ROOM]&&VIEWS[EX_ROOM]();
+  }else{
+    if(!confirm("考场模式：退出后本次作答全部作废（不计成绩不存错题），确定离开？"))return;
+    EX=null;VIEWS[EX_ROOM]&&VIEWS[EX_ROOM]();
+  }
 }
 var EX_ROOM="zhenti";
 function gradeOne(q,picked){
