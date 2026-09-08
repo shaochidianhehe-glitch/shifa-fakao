@@ -219,23 +219,23 @@
   <section id="v-wrong" class="view"></section>
   <section id="v-laws" class="view"></section>
 </main>
-<script src="tiku/zs052.js?v=20260907c"></script>
-<script src="tiku/zs053.js?v=20260907c"></script>
-<script src="tiku/zs054.js?v=20260907c"></script>
-<script src="tiku/zs055.js?v=20260907c"></script>
-<script src="tiku/zs056.js?v=20260907c"></script>
-<script src="tiku/zs057.js?v=20260907c"></script>
-<script src="tiku/zs058.js?v=20260907c"></script>
-<script src="tiku/zs059.js?v=20260907c"></script>
-<script src="tiku/zs060.js?v=20260907c"></script>
-<script src="tiku/zs061.js?v=20260907c"></script>
-<script src="tiku/al031.js?v=20260907c"></script>
-<script src="tiku/al032.js?v=20260907c"></script>
-<script src="tiku/al033.js?v=20260907c"></script>
-<script src="tiku/zt040.js?v=20260907c"></script>
-<script src="tiku/zt041.js?v=20260907c"></script>
-<script src="tiku/zt042.js?v=20260907c"></script>
-<script src="tiku/zt043.js?v=20260907c"></script>
+<script src="tiku/zs052.js?v=20260907d"></script>
+<script src="tiku/zs053.js?v=20260907d"></script>
+<script src="tiku/zs054.js?v=20260907d"></script>
+<script src="tiku/zs055.js?v=20260907d"></script>
+<script src="tiku/zs056.js?v=20260907d"></script>
+<script src="tiku/zs057.js?v=20260907d"></script>
+<script src="tiku/zs058.js?v=20260907d"></script>
+<script src="tiku/zs059.js?v=20260907d"></script>
+<script src="tiku/zs060.js?v=20260907d"></script>
+<script src="tiku/zs061.js?v=20260907d"></script>
+<script src="tiku/al031.js?v=20260907d"></script>
+<script src="tiku/al032.js?v=20260907d"></script>
+<script src="tiku/al033.js?v=20260907d"></script>
+<script src="tiku/zt040.js?v=20260907d"></script>
+<script src="tiku/zt041.js?v=20260907d"></script>
+<script src="tiku/zt042.js?v=20260907d"></script>
+<script src="tiku/zt043.js?v=20260907d"></script>
 <script>
 /* ================= 拾法 · 法考修行 =================
    单文件应用。进度存 localStorage（键前缀 shifa_）。
@@ -319,22 +319,6 @@ var SUBJECTS=[
   {k:"三国法",zi:"三"},{k:"理论法",zi:"理"}
 ];
 function subjOf(q){return q.s||"综合";}
-/* 首页数据池诊断：一眼看出题库加载状态 */
-function diagHTML(){
-  var mn=(window.SHIFA_MN||[]).length, zt=(window.SHIFA_ZT||[]).length,
-      kp=(window.SHIFA_KP||[]).length, ft=(window.SHIFA_FT||[]).length,
-      sj=(window.SHIFA_SJ||[]).length;
-  var ok = mn>1500 && ft>3000;  /* 正常基线 */
-  if(ok) return '<div style="margin-top:14px;font-size:12px;color:var(--ink2);">'+
-    '✓ 数据自检：题库 '+mn+' · 真题 '+zt+' · 讲义 '+kp+' · 法条 '+ft+' · 主观 '+sj+' —— 全部就绪</div>';
-  return '<div class="mn" style="border-left-color:var(--bad);background:rgba(166,61,47,.06);margin-top:14px;">'+
-    '<b>⚠ 数据自检未通过</b>（题库 '+mn+'/1844 · 真题 '+zt+'/161 · 讲义 '+kp+'/73 · 法条 '+ft+'/3359 · 主观 '+sj+'/12）<br>'+
-    '题库文件没有加载成功。常见原因：<br>'+
-    '1. index.html 和 tiku 文件夹没有放在一起（解压后必须在同一文件夹）；<br>'+
-    '2. 安全软件（360/电脑管家/Defender）拦截或隔离了 tiku 里的 js 文件——请查看拦截记录并信任；<br>'+
-    '3. 解压不完整——请重新解压全部内容。'+
-    '</div>';
-}
 /* 题库未加载提示（预览沙箱会拦截外挂 js；用 Edge 打开即可） */
 function poolWarn(){
   return '<div class="mn" style="border-left-color:var(--bad);background:rgba(166,61,47,.06);margin-bottom:18px;">'
@@ -393,8 +377,7 @@ function renderHome(){
   +'<p style="margin-top:22px;font-size:12.5px;color:var(--ink2);line-height:1.9;">'
   +'※ 真题依公开回忆版整理，仅供个人备考参考；模拟题为依考情原创编写。'
   +'进度保存在本机浏览器中，请勿清除站点数据。<br>'
-  +'<a href="download.html" style="color:var(--indigo);">⬇ 下载到本机离线使用（点此下载 zip）</a></p>'
-  + diagHTML();
+  +'<a href="download.html" style="color:var(--indigo);">⬇ 下载到本机离线使用（点此下载 zip）</a></p>';
   $("exam-date").addEventListener("change",function(){
     S.examDate=this.value||S.examDate; save(); hud();
   });
@@ -1450,79 +1433,79 @@ else boot();
 <!-- dup zt041.js -->
 <!-- dup zt042.js -->
 <!-- dup zt043.js -->
-<script src="tiku/zt044.js?v=20260907c"></script>
-<script src="tiku/zt045.js?v=20260907c"></script>
-<script src="tiku/zt046.js?v=20260907c"></script>
-<script src="tiku/zt047.js?v=20260907c"></script>
-<script src="tiku/zt048.js?v=20260907c"></script>
-<script src="tiku/zt049.js?v=20260907c"></script>
-<script src="tiku/zt050.js?v=20260907c"></script>
-<script src="tiku/zt051.js?v=20260907c"></script>
-<script src="tiku/mn034.js?v=20260907c"></script>
-<script src="tiku/tk072.js?v=20260907c"></script>
-<script src="tiku/tk077.js?v=20260907c"></script>
-<script src="tiku/tk078.js?v=20260907c"></script>
-<script src="tiku/tk079.js?v=20260907c"></script>
-<script src="tiku/tk080.js?v=20260907c"></script>
-<script src="tiku/tk081.js?v=20260907c"></script>
-<script src="tiku/qz030.js?v=20260907c"></script>
-<script src="tiku/tk082.js?v=20260907c"></script>
-<script src="tiku/tk083.js?v=20260907c"></script>
-<script src="tiku/tk062.js?v=20260907c"></script>
-<script src="tiku/fc009.js?v=20260907c"></script>
-<script src="tiku/fc008.js?v=20260907c"></script>
-<script src="tiku/fc002.js?v=20260907c"></script>
-<script src="tiku/fc003.js?v=20260907c"></script>
-<script src="tiku/fc004.js?v=20260907c"></script>
-<script src="tiku/fc005.js?v=20260907c"></script>
-<script src="tiku/fc006.js?v=20260907c"></script>
-<script src="tiku/fc007.js?v=20260907c"></script>
-<script src="tiku/tk063.js?v=20260907c"></script>
-<script src="tiku/tk064.js?v=20260907c"></script>
-<script src="tiku/tk065.js?v=20260907c"></script>
-<script src="tiku/tk066.js?v=20260907c"></script>
-<script src="tiku/tk067.js?v=20260907c"></script>
-<script src="tiku/tk068.js?v=20260907c"></script>
-<script src="tiku/tk069.js?v=20260907c"></script>
-<script src="tiku/tk070.js?v=20260907c"></script>
-<script src="tiku/tk071.js?v=20260907c"></script>
-<script src="tiku/tk073.js?v=20260907c"></script>
-<script src="tiku/tk074.js?v=20260907c"></script>
-<script src="tiku/tk075.js?v=20260907c"></script>
-<script src="tiku/tk076.js?v=20260907c"></script>
-<script src="tiku/tk084.js?v=20260907c"></script>
+<script src="tiku/zt044.js?v=20260907d"></script>
+<script src="tiku/zt045.js?v=20260907d"></script>
+<script src="tiku/zt046.js?v=20260907d"></script>
+<script src="tiku/zt047.js?v=20260907d"></script>
+<script src="tiku/zt048.js?v=20260907d"></script>
+<script src="tiku/zt049.js?v=20260907d"></script>
+<script src="tiku/zt050.js?v=20260907d"></script>
+<script src="tiku/zt051.js?v=20260907d"></script>
+<script src="tiku/mn034.js?v=20260907d"></script>
+<script src="tiku/tk072.js?v=20260907d"></script>
+<script src="tiku/tk077.js?v=20260907d"></script>
+<script src="tiku/tk078.js?v=20260907d"></script>
+<script src="tiku/tk079.js?v=20260907d"></script>
+<script src="tiku/tk080.js?v=20260907d"></script>
+<script src="tiku/tk081.js?v=20260907d"></script>
+<script src="tiku/qz030.js?v=20260907d"></script>
+<script src="tiku/tk082.js?v=20260907d"></script>
+<script src="tiku/tk083.js?v=20260907d"></script>
+<script src="tiku/tk062.js?v=20260907d"></script>
+<script src="tiku/fc009.js?v=20260907d"></script>
+<script src="tiku/fc008.js?v=20260907d"></script>
+<script src="tiku/fc002.js?v=20260907d"></script>
+<script src="tiku/fc003.js?v=20260907d"></script>
+<script src="tiku/fc004.js?v=20260907d"></script>
+<script src="tiku/fc005.js?v=20260907d"></script>
+<script src="tiku/fc006.js?v=20260907d"></script>
+<script src="tiku/fc007.js?v=20260907d"></script>
+<script src="tiku/tk063.js?v=20260907d"></script>
+<script src="tiku/tk064.js?v=20260907d"></script>
+<script src="tiku/tk065.js?v=20260907d"></script>
+<script src="tiku/tk066.js?v=20260907d"></script>
+<script src="tiku/tk067.js?v=20260907d"></script>
+<script src="tiku/tk068.js?v=20260907d"></script>
+<script src="tiku/tk069.js?v=20260907d"></script>
+<script src="tiku/tk070.js?v=20260907d"></script>
+<script src="tiku/tk071.js?v=20260907d"></script>
+<script src="tiku/tk073.js?v=20260907d"></script>
+<script src="tiku/tk074.js?v=20260907d"></script>
+<script src="tiku/tk075.js?v=20260907d"></script>
+<script src="tiku/tk076.js?v=20260907d"></script>
+<script src="tiku/tk084.js?v=20260907d"></script>
 <!-- dup fc002.js -->
 <!-- dup fc003.js -->
 <!-- dup fc004.js -->
 <!-- dup fc005.js -->
 <!-- dup fc006.js -->
 <!-- dup fc007.js -->
-<script src="tiku/zg000.js?v=20260907c"></script>
-<script src="tiku/zg001.js?v=20260907c"></script>
-<script src="tiku/ft035.js?v=20260907c"></script>
-<script src="tiku/ft036.js?v=20260907c"></script>
-<script src="tiku/ft037.js?v=20260907c"></script>
-<script src="tiku/ftz038.js?v=20260907c"></script>
-<script src="tiku/ftz039.js?v=20260907c"></script>
-<script src="tiku/qb010.js?v=20260907c"></script>
-<script src="tiku/qb011.js?v=20260907c"></script>
-<script src="tiku/qb012.js?v=20260907c"></script>
-<script src="tiku/qb013.js?v=20260907c"></script>
-<script src="tiku/qb014.js?v=20260907c"></script>
-<script src="tiku/qb015.js?v=20260907c"></script>
-<script src="tiku/qb016.js?v=20260907c"></script>
-<script src="tiku/qb017.js?v=20260907c"></script>
-<script src="tiku/qb018.js?v=20260907c"></script>
-<script src="tiku/qb019.js?v=20260907c"></script>
-<script src="tiku/qb020.js?v=20260907c"></script>
-<script src="tiku/qb021.js?v=20260907c"></script>
-<script src="tiku/qb022.js?v=20260907c"></script>
-<script src="tiku/qb023.js?v=20260907c"></script>
-<script src="tiku/qb024.js?v=20260907c"></script>
-<script src="tiku/qb025.js?v=20260907c"></script>
-<script src="tiku/qb026.js?v=20260907c"></script>
-<script src="tiku/qb027.js?v=20260907c"></script>
-<script src="tiku/qb028.js?v=20260907c"></script>
-<script src="tiku/qb029.js?v=20260907c"></script>
+<script src="tiku/zg000.js?v=20260907d"></script>
+<script src="tiku/zg001.js?v=20260907d"></script>
+<script src="tiku/ft035.js?v=20260907d"></script>
+<script src="tiku/ft036.js?v=20260907d"></script>
+<script src="tiku/ft037.js?v=20260907d"></script>
+<script src="tiku/ftz038.js?v=20260907d"></script>
+<script src="tiku/ftz039.js?v=20260907d"></script>
+<script src="tiku/qb010.js?v=20260907d"></script>
+<script src="tiku/qb011.js?v=20260907d"></script>
+<script src="tiku/qb012.js?v=20260907d"></script>
+<script src="tiku/qb013.js?v=20260907d"></script>
+<script src="tiku/qb014.js?v=20260907d"></script>
+<script src="tiku/qb015.js?v=20260907d"></script>
+<script src="tiku/qb016.js?v=20260907d"></script>
+<script src="tiku/qb017.js?v=20260907d"></script>
+<script src="tiku/qb018.js?v=20260907d"></script>
+<script src="tiku/qb019.js?v=20260907d"></script>
+<script src="tiku/qb020.js?v=20260907d"></script>
+<script src="tiku/qb021.js?v=20260907d"></script>
+<script src="tiku/qb022.js?v=20260907d"></script>
+<script src="tiku/qb023.js?v=20260907d"></script>
+<script src="tiku/qb024.js?v=20260907d"></script>
+<script src="tiku/qb025.js?v=20260907d"></script>
+<script src="tiku/qb026.js?v=20260907d"></script>
+<script src="tiku/qb027.js?v=20260907d"></script>
+<script src="tiku/qb028.js?v=20260907d"></script>
+<script src="tiku/qb029.js?v=20260907d"></script>
 </body>
 </html>
