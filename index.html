@@ -2,8 +2,22 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>拾法 · 法考修行</title>
+<meta name="theme-color" content="#a63d2f">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="拾法">
+<style>
+  /* 全面屏安全区（iPhone 刘海/小白条） */
+  @supports(padding:env(safe-area-inset-bottom)){
+    body{padding-bottom:env(safe-area-inset-bottom);}
+  }
+</style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;900&family=Cormorant+Garamond:ital,wght@0,500;1,500&display=swap" rel="stylesheet">
 <style>
@@ -247,7 +261,50 @@ var esc=function(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"
 /* ---------- 存储 ---------- */
 var LS="shifa_";
 function loadLS(k,d){try{var v=localStorage.getItem(LS+k);return v==null?d:JSON.parse(v);}catch(e){return d;}}
-function save(){try{localStorage.setItem(LS+"state",JSON.stringify(S));}catch(e){}}
+/* ---------- 存储加固：localStorage + IndexedDB 双写（iOS Safari 「7天不用即清理」对策） ---------- */
+var _idbDB=null,_idbPutQ=[],_idbGetQ=[];   /* _idbDB: null=打开中 false=不可用 IDBDatabase=就绪 */
+function idbOpen(){
+  if(_idbDB!==null)return;
+  var R=window.indexedDB; if(!R){_idbDB=false;return;}
+  var req;
+  try{ req=R.open("shifa_kv",1); }catch(e){ _idbDB=false; return; }
+  req.onupgradeneeded=function(){ try{ req.result.createObjectStore("kv"); }catch(e){} };
+  req.onsuccess=function(){
+    _idbDB=req.result;
+    _idbDB.onversionchange=function(){ try{_idbDB.close();}catch(e){} _idbDB=null; idbOpen(); };
+    var q=_idbPutQ; _idbPutQ=[];
+    for(var i=0;i<q.length;i++){ try{ _idbDB.transaction("kv","readwrite").objectStore("kv").put(q[i][1],q[i][0]); }catch(e){} }
+    var gq=_idbGetQ; _idbGetQ=[];
+    for(var j=0;j<gq.length;j++){ idbGet(gq[j][0],gq[j][1]); }
+  };
+  req.onerror=function(){ _idbDB=false; };
+}
+function idbPut(k,v){
+  idbOpen();
+  if(_idbDB){ try{ _idbDB.transaction("kv","readwrite").objectStore("kv").put(v,k); }catch(e){} }
+  else if(_idbDB===null){ _idbPutQ.push([k,v]); }   /* 连接打开中，排队 */
+}
+function idbGet(k,cb){
+  idbOpen();
+  if(_idbDB){
+    try{ var r=_idbDB.transaction("kv").objectStore("kv").get(k);
+      r.onsuccess=function(){ cb(r.result||null); }; r.onerror=function(){ cb(null); };
+    }catch(e){ cb(null); }
+  }
+  else if(_idbDB===null){ _idbGetQ.push([k,cb]); }  /* 连接打开中，排队 */
+  else { cb(null); }
+}
+function save(){
+  var payload=null;
+  try{ payload=JSON.stringify(S); localStorage.setItem(LS+"state",payload); }catch(e){}
+  if(payload!=null) idbPut("state",payload);
+}
+function restoreFromIDB(){
+  try{ if(localStorage.getItem(LS+"state")!=null)return; }catch(e){}
+  idbGet("state",function(v){ if(!v)return;
+    try{ if(JSON.stringify(S)!==v){ localStorage.setItem(LS+"state",v); location.reload(); } }catch(e){}
+  });
+}
 var S=loadLS("state",{
   examDate:"2027-09-11",        /* 客观题考试日，总览页可改 */
   done:{},                      /* qid -> {p,a,ok,t,src} */
@@ -1592,5 +1649,61 @@ else boot();
 <script src="tiku/qb027.js?v=20260907e"></script>
 <script src="tiku/qb028.js?v=20260907e"></script>
 <script src="tiku/qb029.js?v=20260907e"></script>
+<script>
+/* ---------- PWA：Service Worker 注册 + 安装引导 ---------- */
+(function(){
+  var isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
+  var isWX=/MicroMessenger/i.test(navigator.userAgent);
+  var standalone=(window.matchMedia&&window.matchMedia("(display-mode: standalone)").matches)
+    ||window.navigator.standalone===true;
+  var installShown=false;
+
+  if("serviceWorker" in navigator){
+    window.addEventListener("load",function(){
+      navigator.serviceWorker.register("sw.js").catch(function(){});
+    });
+  }
+  if(standalone)return;
+
+  function tip(html,ms){
+    var d=document.createElement("div");
+    d.style.cssText="position:fixed;left:50%;transform:translateX(-50%);bottom:24px;z-index:9999;"
+      +"max-width:92vw;background:#2f2b26;color:#f4efe3;padding:13px 20px;border-radius:6px;"
+      +"font-size:14px;line-height:1.9;box-shadow:0 6px 24px rgba(47,43,38,.35);letter-spacing:1px;";
+    d.innerHTML=html;
+    document.body.appendChild(d);
+    setTimeout(function(){ if(d.parentNode)d.parentNode.removeChild(d); },ms||8000);
+    return d;
+  }
+  function showHint(){
+    if(installShown)return;
+    var msg;
+    if(isWX) msg="微信内无法安装：点右上角「···」→「在浏览器打开」，即可把拾法装到手机桌面，离线刷题。";
+    else if(isIOS) msg="想离线刷题？点 Safari 底部「分享」→「添加到主屏幕」，拾法即变身独立App。";
+    else msg="想把拾法装到手机桌面、离线刷题？在浏览器菜单中点「添加到主屏幕 / 安装应用」。";
+    tip(msg,9000);
+  }
+  try{
+    if(localStorage.getItem("shifa_pwaHint")!="1"){
+      localStorage.setItem("shifa_pwaHint","1");
+      setTimeout(showHint,2500);
+    }
+  }catch(e){ setTimeout(showHint,2500); }
+
+  /* 安卓/桌面 Chrome：原生安装弹窗 */
+  var deferredPrompt=null;
+  window.addEventListener("beforeinstallprompt",function(e){
+    e.preventDefault();deferredPrompt=e;
+    if(isIOS||isWX||installShown)return;
+    installShown=true;
+    var d=tip('把 <b>拾法</b> 装到手机桌面，离线也能刷全部题库？&nbsp;'
+      +'<button id="pwaInstallBtn" style="border:none;background:#a63d2f;color:#f7efe2;'
+      +'padding:6px 16px;border-radius:4px;font-family:inherit;font-size:14px;cursor:pointer;">安装</button>',15000);
+    var b=d.querySelector("#pwaInstallBtn");
+    if(b)b.onclick=function(){ if(d.parentNode)d.parentNode.removeChild(d);
+      deferredPrompt.prompt();deferredPrompt=null; };
+  });
+})();
+</script>
 </body>
 </html>
